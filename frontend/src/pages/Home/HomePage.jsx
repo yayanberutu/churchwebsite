@@ -4,6 +4,8 @@ import Header from '../../components/Header/Header';
 import HeroSection from '../../components/HeroSection/HeroSection';
 import DailyVerse from '../../components/DailyVerse/DailyVerse';
 import UpcomingEvents from '../../components/UpcomingEvents/UpcomingEvents';
+import Announcements from '../../components/Announcements/Announcements';
+import MinistryActivities from '../../components/MinistryActivities/MinistryActivities';
 import Footer from '../../components/Footer/Footer';
 import { fetchSiteConfig } from '../../api/siteConfigApi';
 
@@ -73,6 +75,8 @@ const HomePage = () => {
         <HeroSection />
         <DailyVerse />
         <UpcomingEvents />
+        <Announcements />
+        <MinistryActivities />
       </main>
       <Footer churchName={config?.churchName} />
     </div>
