@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+
+<html lang="id"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HKBP Kernolong</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,100..900;1,100..900&amp;family=Be+Vietnam+Pro:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed-dim": "#ffb691",
+                        "primary-container": "#1e3a8a",
+                        "background": "#f8f9fa",
+                        "tertiary": "#4b1c00",
+                        "on-surface-variant": "#444651",
+                        "inverse-on-surface": "#f0f1f2",
+                        "surface-container": "#edeeef",
+                        "on-tertiary-fixed-variant": "#773205",
+                        "inverse-primary": "#b6c4ff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary-fixed-dim": "#ffb3b5",
+                        "tertiary-fixed": "#ffdbcb",
+                        "on-error": "#ffffff",
+                        "on-primary": "#ffffff",
+                        "on-tertiary-container": "#f39461",
+                        "surface-container-low": "#f3f4f5",
+                        "on-tertiary-fixed": "#341100",
+                        "surface-variant": "#e1e3e4",
+                        "primary": "#00236f",
+                        "surface-container-high": "#e7e8e9",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "primary-fixed": "#dce1ff",
+                        "on-primary-fixed-variant": "#264191",
+                        "surface-dim": "#d9dadb",
+                        "on-error-container": "#93000a",
+                        "surface-bright": "#f8f9fa",
+                        "surface-tint": "#4059aa",
+                        "on-secondary-fixed-variant": "#8e0f28",
+                        "tertiary-container": "#6e2c00",
+                        "secondary": "#af2b3e",
+                        "error-container": "#ffdad6",
+                        "primary-fixed-dim": "#b6c4ff",
+                        "on-surface": "#191c1d",
+                        "inverse-surface": "#2e3132",
+                        "on-primary-container": "#90a8ff",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#fd6673",
+                        "on-background": "#191c1d",
+                        "on-secondary-fixed": "#40000b",
+                        "on-secondary-container": "#680018",
+                        "secondary-fixed": "#ffdada",
+                        "on-primary-fixed": "#00164e",
+                        "outline": "#757682",
+                        "surface": "#f8f9fa",
+                        "outline-variant": "#c5c5d3",
+                        "surface-container-highest": "#e1e3e4"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "fontFamily": {
+                        "headline": ["Public Sans"],
+                        "body": ["Be Vietnam Pro"],
+                        "label": ["Be Vietnam Pro"]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        body { font-family: 'Be Vietnam Pro', sans-serif; }
+        h1, h2, h3, h4, h5, h6, .font-headline { font-family: 'Public Sans', sans-serif; }
+    </style>
+</head>
+<body class="bg-background text-on-surface antialiased">
+<!-- TopNavBar -->
+<nav class="sticky top-0 w-full z-50 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl shadow-sm dark:shadow-none">
+<div class="max-w-7xl mx-auto px-8 flex justify-between items-center h-20">
+<a class="text-2xl font-black text-primary uppercase font-headline tracking-tight" href="#">
+            HKBP Kernolong
+        </a>
+<div class="hidden md:flex items-center gap-6">
+<a class="text-primary font-bold border-b-2 border-secondary hover:text-secondary transition-colors font-body text-sm" href="#">Home</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors font-body text-sm" href="#">About Us</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors font-body text-sm" href="#">Ministries</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors font-body text-sm" href="#">Sermons</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors font-body text-sm" href="#">Events</a>
+<a class="text-on-surface-variant font-medium hover:text-secondary transition-colors font-body text-sm" href="#">Giving</a>
+</div>
+<div class="flex items-center gap-4">
+<button aria-label="Search" class="text-primary hover:text-secondary transition-colors">
+<span class="material-symbols-outlined text-2xl" data-icon="search">search</span>
+</button>
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-md font-body text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
+                Contact Us
+            </button>
+</div>
+</div>
+</nav>
+<main>
+<!-- Hero Section -->
+<section class="relative min-h-[819px] flex items-center justify-center bg-surface-container-low overflow-hidden">
+<div class="absolute inset-0 z-0">
+<img alt="Church congregation gathered in warm sunlight" class="w-full h-full object-cover opacity-90" data-alt="High quality photography of a diverse church congregation gathered together, warm morning sunlight streaming through tall windows, feelings of community, faith, and peace, shallow depth of field" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAKoOYcogPfp3wG5CqyjYDtsrrZfJQstbvEO0kadXnQBdhRsHaUJzuf45Iga9tuSXu7dXwE8alyR_VJKJ-Y-lDDtM4cjb2osFx3jqIBxlWSgSoxHv5xcZeXsnxUlDGTndeeIqzPalzl-C5xFaF5fNnh9sIiP_c04rqvsCpRGKtFYifPjZBXZoogQH2ADIpPGIIy5cM_lxdAQYnXlQi3liMZu1jwhg0aYOjCVRt_JicZV2f0JcQv11ooHPDcNljnNi7VUrGw5wRf_i8"/>
+<div class="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-transparent"></div>
+</div>
+<div class="relative z-10 max-w-7xl mx-auto px-8 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+<div class="space-y-6">
+<h1 class="font-headline text-5xl md:text-6xl font-bold text-primary tracking-tight leading-tight">
+                    Selamat Datang di HKBP Kernolong
+                </h1>
+<p class="font-body text-lg text-on-surface-variant max-w-md leading-relaxed">
+                    Membangun iman, harapan, dan kasih dalam persekutuan yang hidup. Bergabunglah bersama kami dalam perjalanan rohani yang mendalam.
+                </p>
+<div class="pt-4 flex flex-wrap gap-4">
+<button class="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-3 rounded-md font-body font-semibold shadow-lg hover:shadow-xl transition-all">
+                        Jadwal Ibadah
+                    </button>
+<button class="bg-surface-container-highest text-on-primary-fixed-variant px-8 py-3 rounded-md font-body font-semibold hover:bg-surface-variant transition-colors flex items-center gap-2">
+                        Download Warta Minggu Ini
+                        <span class="material-symbols-outlined text-sm" data-icon="download">download</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Daily Verse Section -->
+<section class="py-24 bg-surface-container-low">
+<div class="max-w-4xl mx-auto px-8">
+<div class="bg-surface-container-lowest rounded-xl p-12 relative overflow-hidden shadow-[0_20px_40px_-15px_rgba(25,28,29,0.06)]">
+<div class="absolute top-8 left-8 text-secondary/10">
+<span class="material-symbols-outlined text-8xl" data-icon="format_quote">format_quote</span>
+</div>
+<div class="relative z-10 space-y-6 text-center">
+<h2 class="font-headline text-2xl text-secondary font-semibold uppercase tracking-widest">Ayat Harian</h2>
+<blockquote class="font-headline text-3xl md:text-4xl text-primary leading-tight font-medium italic">
+                        "Tetapi carilah dahulu Kerajaan Allah dan kebenarannya, maka semuanya itu akan ditambahkan kepadamu."
+                    </blockquote>
+<p class="font-body text-lg text-on-surface-variant font-medium">Matius 6:33</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Upcoming Events -->
+<section class="py-24 bg-background">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline text-4xl font-bold text-primary tracking-tight">Kegiatan Mendatang</h2>
+<p class="font-body text-on-surface-variant mt-2 text-lg">Ikuti berbagai kegiatan persekutuan dan pelayanan.</p>
+</div>
+<button class="text-primary font-body font-semibold hover:text-secondary transition-colors flex items-center gap-2">
+                    Lihat Semua
+                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Event Card 1 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Sunday Worship Service" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Church choir singing during a bright Sunday morning service, soft glowing lights, wooden pews, focused on the choir members, warm and spiritual atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAq892xIFIG-nJq1m2w9dQWK0pWGL1zbhSvSc0S35PGRQevWuX3fVT8inuyyBgg8qbzIXwLIQPhzyKHeVKcR_vX1lVPAmE_9nLL-tRD0OMWxIyyQYPWwpLzBtoNdbfibygHhjtCQb_a-LH1wZ5Qx4GcfQVLWxSfM-suOdpWH4ogS1rnqc5vPL2UeZ6XhljEDElTWU8IJWnSeIqB9GnEzMlbtnB7TJc0bqURFszRJwTmL-nQV2ptci7TRbfBWNg4HfXworoTgIHx3OQ"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-secondary text-on-secondary px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider font-body">Ibadah Minggu</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="font-headline text-xl font-bold text-primary group-hover:text-secondary transition-colors">Ibadah Raya Minggu</h3>
+<div class="space-y-2 font-body text-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="calendar_today">calendar_today</span>
+<span>Minggu, 12 Nov 2023</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="schedule">schedule</span>
+<span>09:00 WIB</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
+<span>Gereja HKBP Kernolong</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Event Card 2 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Youth Fellowship Gathering" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Group of young adults engaged in a lively discussion holding bibles, sitting in a circle in a modern church community room, bright lighting, casual and welcoming setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCTSQsUdq7vK5b0W9qUt4en6o39kMxfPgXrCHDxQvGS-_RLK_ZG7tSO3j3oDYxe9PGluicpiqlRSfpIwxSXZBDzI13wstsSgFpOnLePfl5a_1Y2qwechrPW7NADv_k5E5eEjC94vJqbILqht-YJqHYO-OnDJau_GwzrrCNjqzParOGP1166GOqLrkVk-cjZqFE6EDpaYp-pLfPjxvRQzInK2gkqlyu96eXXjdayi5CcJzBeQPF23EJvk83eECC3DtLGeRSVy8sVmKw"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-primary-container text-on-primary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider font-body">Pemuda</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="font-headline text-xl font-bold text-primary group-hover:text-secondary transition-colors">Persekutuan Naposobulung</h3>
+<div class="space-y-2 font-body text-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="calendar_today">calendar_today</span>
+<span>Sabtu, 18 Nov 2023</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="schedule">schedule</span>
+<span>18:00 WIB</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
+<span>Ruang Serbaguna</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Event Card 3 -->
+<div class="bg-surface-container-lowest rounded-xl overflow-hidden group">
+<div class="aspect-video relative overflow-hidden">
+<img alt="Bible Study Group" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Close up of an open bible resting on a wooden table, warm reading lamp illuminating the pages, a cup of tea beside it, quiet and contemplative mood" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC4llKsEnxmz6beefCXrlpJOD1QvApX6oHo1zHP9UeFT2laRBEZLTvhjy53LC8LuIlhJSmBYtHzQJ5t9ZPqIAsfN4pPnbHJ-sfsJL5HJG_-xVXiHW5M08G6EfrS26Hb7MH9xSqj200r1e4FfjeehUcTiEbQqs_o9WWyM3dmRQkFDFW5LJLcQBSKH-09_iFkuwjx8ji1ASyZ2EhLlYVvvDy-lsyiXwAIvEXbQsD5cniioB6sP2bbAiQ-9ZrwC7KcVC8DJxvFbQZpm7k"/>
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+<div class="absolute bottom-4 left-4">
+<span class="bg-tertiary-container text-on-tertiary-container px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider font-body">Pendalaman Alkitab</span>
+</div>
+</div>
+<div class="p-6 space-y-4">
+<h3 class="font-headline text-xl font-bold text-primary group-hover:text-secondary transition-colors">Sermon &amp; Pemahaman Alkitab</h3>
+<div class="space-y-2 font-body text-sm text-on-surface-variant">
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="calendar_today">calendar_today</span>
+<span>Rabu, 15 Nov 2023</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="schedule">schedule</span>
+<span>19:00 WIB</span>
+</div>
+<div class="flex items-center gap-2">
+<span class="material-symbols-outlined text-base" data-icon="location_on">location_on</span>
+<span>Zoom Meeting</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Announcements Section -->
+<section class="py-24 bg-surface-container-low">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline text-4xl font-bold text-primary tracking-tight">Pengumuman</h2>
+<p class="font-body text-on-surface-variant mt-2 text-lg">Informasi terkini untuk seluruh jemaat.</p>
+</div>
+<button class="text-primary font-body font-semibold hover:text-secondary transition-colors flex items-center gap-2">
+                    Lihat Semua
+                    <span class="material-symbols-outlined text-sm" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Announcement Item 1 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:border-primary/50 transition-colors">
+<span class="inline-block px-3 py-1 bg-primary/10 text-primary rounded-full text-xs font-bold font-body uppercase tracking-wider mb-4">Semua</span>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Pendaftaran Baptisan Kudus Anak Gelombang II</h3>
+<p class="font-body text-on-surface-variant text-sm line-clamp-2">Dibuka pendaftaran untuk baptisan kudus yang akan dilaksanakan pada akhir bulan Desember...</p>
+</div>
+<!-- Announcement Item 2 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:border-primary/50 transition-colors">
+<span class="inline-block px-3 py-1 bg-secondary/10 text-secondary rounded-full text-xs font-bold font-body uppercase tracking-wider mb-4">Kaum Ibu</span>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Latihan Paduan Suara Gabungan Ina</h3>
+<p class="font-body text-on-surface-variant text-sm line-clamp-2">Mengundang seluruh anggota seksi perempuan untuk hadir dalam latihan rutin persiapan Natal...</p>
+</div>
+<!-- Announcement Item 3 -->
+<div class="bg-surface-container-lowest p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:border-primary/50 transition-colors">
+<span class="inline-block px-3 py-1 bg-tertiary-container/10 text-on-tertiary-fixed-variant rounded-full text-xs font-bold font-body uppercase tracking-wider mb-4">Pemuda</span>
+<h3 class="font-headline text-xl font-bold text-primary mb-3 leading-tight">Gathering Akhir Tahun NHKBP Kernolong</h3>
+<p class="font-body text-on-surface-variant text-sm line-clamp-2">Kebersamaan pemuda-pemudi dalam rangka mempererat tali persaudaraan menyambut tahun baru...</p>
+</div>
+</div>
+</div>
+</section>
+<!-- Church Service Activities Section -->
+<section class="py-24 bg-background">
+<div class="max-w-7xl mx-auto px-8">
+<div class="flex justify-between items-end mb-12">
+<div>
+<h2 class="font-headline text-4xl font-bold text-primary tracking-tight">Kegiatan Pelayanan Gereja</h2>
+<p class="font-body text-on-surface-variant mt-2 text-lg">Dokumentasi momen-momen indah dalam pelayanan kami.</p>
+</div>
+<button class="text-primary font-body font-semibold hover:text-secondary transition-colors flex items-center gap-2">
+                    Lihat Dokumentasi
+                    <span class="material-symbols-outlined text-sm" data-icon="collections">collections</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+<!-- Activity Item 1 -->
+<div class="group">
+<div class="aspect-[4/3] rounded-xl overflow-hidden mb-4 relative shadow-md">
+<img alt="Kunjungan Kasih Diakonia" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A small group of church members visiting an elderly person at home, sharing smiles and a meal, warm atmosphere" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCp6O6902B0FvP_lC_Y1xX1f-6-xR8y-Vp16f2r1z5g0h1i2j3k4l5m6n7o8p9q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p"/>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-4xl" data-icon="visibility">visibility</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-2">Kunjungan Kasih Diakonia</h3>
+<p class="font-body text-on-surface-variant text-sm">Berbagi berkat dan doa bersama jemaat yang sedang sakit di wilayah lingkungan II.</p>
+</div>
+<!-- Activity Item 2 -->
+<div class="group">
+<div class="aspect-[4/3] rounded-xl overflow-hidden mb-4 relative shadow-md">
+<img alt="Sekolah Minggu Ceria" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Children in Sunday school laughing while playing a game indoors, bright colorful classroom setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCo5m6n7o8p9q0r1s2t3u4v5w6x7y8z9a0b1c2d3e4f5g6h7i8j9k0l1m2n3o4p5q6r7s8t9u0v1w2x3y4z5a6b7c8d9e0f1g2h3i4j5k6l7m"/>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-4xl" data-icon="visibility">visibility</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-2">Sekolah Minggu Ceria</h3>
+<p class="font-body text-on-surface-variant text-sm">Kegiatan belajar Alkitab yang interaktif untuk anak-anak melalui permainan dan pujian.</p>
+</div>
+<!-- Activity Item 3 -->
+<div class="group">
+<div class="aspect-[4/3] rounded-xl overflow-hidden mb-4 relative shadow-md">
+<img alt="Bakti Sosial Masyarakat" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="Volunteers in church shirts handing out food packages to people in a neighborhood, sunlight, communal spirit" src="https://lh3.googleusercontent.com/aida-public/AB6AXuCs7t8u9v0w1x2y3z4a5b6c7d8e9f0g1h2i3j4k5l6m7n8o9p0q1r2s3t4u5v6w7x8y9z0a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q"/>
+<div class="absolute inset-0 bg-primary/20 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-4xl" data-icon="visibility">visibility</span>
+</div>
+</div>
+<h3 class="font-headline text-xl font-bold text-primary mb-2">Bakti Sosial Masyarakat</h3>
+<p class="font-body text-on-surface-variant text-sm">Aksi nyata kepedulian gereja terhadap warga sekitar melalui pembagian sembako murah.</p>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-50 dark:bg-slate-950 w-full py-16 border-t border-slate-200/50 dark:border-slate-800/50">
+<div class="max-w-7xl mx-auto px-8 grid grid-cols-1 md:grid-cols-2 gap-12">
+<div>
+<a class="text-xl font-bold text-primary font-headline mb-4 block" href="#">
+                HKBP Kernolong
+            </a>
+<p class="font-body text-sm leading-relaxed text-slate-500">
+                © 2024 HKBP Kernolong. The Reverent Echo: Bridging Tradition and Clarity.
+            </p>
+</div>
+<div class="flex flex-col md:items-end gap-4">
+<div class="flex gap-6 flex-wrap md:justify-end">
+<a class="text-slate-500 font-body text-sm hover:text-primary underline transition-all" href="#">Privacy Policy</a>
+<a class="text-slate-500 font-body text-sm hover:text-primary underline transition-all" href="#">Church Locations</a>
+<a class="text-slate-500 font-body text-sm hover:text-primary underline transition-all" href="#">Ministries</a>
+<a class="text-slate-500 font-body text-sm hover:text-primary underline transition-all" href="#">Archive</a>
+</div>
+</div>
+</div>
+</footer>
+</body></html>
