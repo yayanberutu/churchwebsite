@@ -1,28 +1,44 @@
 // src/components/MinistryActivities/MinistryActivities.jsx
-import React from 'react';
-
-const MOCK_ACTIVITIES = [
-  {
-    id: 1,
-    name: "Kunjungan Kasih Diakonia",
-    image_url: "/images/ministry1.png",
-    short_caption: "Berbagi berkat dan doa bersama jemaat yang sedang sakit di wilayah lingkungan II.",
-  },
-  {
-    id: 2,
-    name: "Sekolah Minggu Ceria",
-    image_url: "/images/ministry2.png",
-    short_caption: "Kegiatan belajar Alkitab yang interaktif untuk anak-anak melalui permainan dan pujian.",
-  },
-  {
-    id: 3,
-    name: "Bakti Sosial Masyarakat",
-    image_url: "/images/ministry3.png",
-    short_caption: "Aksi nyata kepedulian gereja terhadap warga sekitar melalui pembagian sembako murah.",
-  },
-];
+import React, { useState, useEffect } from 'react';
+import { fetchLatestMinistryActivities } from '../../api/publicContentApi';
 
 const MinistryActivities = () => {
+  const [activities, setActivities] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadActivities = async () => {
+      try {
+        setLoading(true);
+        const result = await fetchLatestMinistryActivities();
+        if (result.success) {
+          setActivities(result.data || []);
+        } else {
+          setError(result.message);
+        }
+      } catch (err) {
+        setError("Gagal memuat kegiatan pelayanan");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadActivities();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-background">
+        <div className="max-w-7xl mx-auto px-8 text-center">
+          <p className="font-body text-primary animate-pulse">Memuat kegiatan pelayanan...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) return null; // Hide section if error
+
   return (
     <section className="py-24 bg-background">
       <div className="max-w-7xl mx-auto px-8">
@@ -38,7 +54,7 @@ const MinistryActivities = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {MOCK_ACTIVITIES.map((activity) => (
+          {activities.map((activity) => (
             <div key={activity.id} className="group">
               <div className="aspect-[4/3] rounded-xl overflow-hidden mb-4 relative shadow-md">
                 <img

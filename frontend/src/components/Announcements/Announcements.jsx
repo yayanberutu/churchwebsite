@@ -1,26 +1,6 @@
 // src/components/Announcements/Announcements.jsx
-import React from 'react';
-
-const MOCK_ANNOUNCEMENTS = [
-  {
-    id: 1,
-    title: "Pendaftaran Baptisan Kudus Anak Gelombang II",
-    target_audience: "Semua",
-    snippet: "Dibuka pendaftaran untuk baptisan kudus yang akan dilaksanakan pada akhir bulan Desember...",
-  },
-  {
-    id: 2,
-    title: "Latihan Paduan Suara Gabungan Ina",
-    target_audience: "Kaum Ibu",
-    snippet: "Mengundang seluruh anggota seksi perempuan untuk hadir dalam latihan rutin persiapan Natal...",
-  },
-  {
-    id: 3,
-    title: "Gathering Akhir Tahun NHKBP Kernolong",
-    target_audience: "Pemuda",
-    snippet: "Kebersamaan pemuda-pemudi dalam rangka mempererat tali persaudaraan menyambut tahun baru...",
-  },
-];
+import React, { useState, useEffect } from 'react';
+import { fetchLatestAnnouncements } from '../../api/publicContentApi';
 
 const getBadgeClasses = (target) => {
   switch (target) {
@@ -40,6 +20,42 @@ const getBadgeClasses = (target) => {
 };
 
 const Announcements = () => {
+  const [announcements, setAnnouncements] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const loadAnnouncements = async () => {
+      try {
+        setLoading(true);
+        const result = await fetchLatestAnnouncements();
+        if (result.success) {
+          setAnnouncements(result.data || []);
+        } else {
+          setError(result.message);
+        }
+      } catch (err) {
+        setError("Gagal memuat pengumuman");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadAnnouncements();
+  }, []);
+
+  if (loading) {
+    return (
+      <section className="py-24 bg-surface-container-low">
+        <div className="max-w-7xl mx-auto px-8 text-center">
+          <p className="font-body text-primary animate-pulse">Memuat pengumuman...</p>
+        </div>
+      </section>
+    );
+  }
+
+  if (error) return null; // Hide section if error
+
   return (
     <section className="py-24 bg-surface-container-low">
       <div className="max-w-7xl mx-auto px-8">
@@ -55,7 +71,7 @@ const Announcements = () => {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {MOCK_ANNOUNCEMENTS.map((item) => (
+          {announcements.map((item) => (
             <div
               key={item.id}
               className="bg-surface-container-lowest p-8 rounded-xl shadow-sm border border-outline-variant/30 hover:border-primary/50 transition-colors"
@@ -69,7 +85,7 @@ const Announcements = () => {
                 {item.title}
               </h3>
               <p className="font-body text-on-surface-variant text-sm line-clamp-2">
-                {item.snippet}
+                {item.snippet || "Lihat detail pengumuman untuk informasi lebih lanjut."}
               </p>
             </div>
           ))}

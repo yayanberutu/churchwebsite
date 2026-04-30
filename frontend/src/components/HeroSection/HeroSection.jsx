@@ -1,5 +1,5 @@
-// src/components/HeroSection/HeroSection.jsx
 import React from 'react';
+import { fetchLatestWarta } from '../../api/publicContentApi';
 
 const HeroSection = () => {
   return (
@@ -26,17 +26,13 @@ const HeroSection = () => {
               Jadwal Ibadah
             </button>
             <button
-              onClick={() => {
-                fetch('http://localhost:8080/api/v1/public/warta/latest/download')
-                  .then(res => res.json())
-                  .then(data => {
-                    if (data.success && data.data?.file_url) {
-                      window.open(data.data.file_url, '_blank');
-                    } else {
-                      alert('Warta minggu ini belum tersedia.');
-                    }
-                  })
-                  .catch(() => alert('Gagal mengunduh warta. Coba lagi nanti.'));
+              onClick={async () => {
+                const result = await fetchLatestWarta();
+                if (result.success && result.data?.file_url) {
+                  window.open(result.data.file_url, '_blank');
+                } else {
+                  alert('Warta minggu ini belum tersedia.');
+                }
               }}
               className="bg-surface-container-highest text-on-primary-fixed-variant px-8 py-3 rounded-md font-body font-semibold hover:bg-surface-variant transition-colors flex items-center gap-2"
             >
