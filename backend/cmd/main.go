@@ -33,10 +33,10 @@ func main() {
 	svc := service.NewSiteConfigService(repo)
 	hdl := handler.NewSiteConfigHandler(svc)
 
-	// Initialize Sprint 2 layers
-	s2Repo := repository.NewSprint2Repository(db)
-	s2Svc := service.NewSprint2Service(s2Repo)
-	s2Hdl := handler.NewSprint2Handler(s2Svc)
+	// Initialize Public Content layers (Warta, Announcements, Activities)
+	pcRepo := repository.NewPublicContentRepository(db)
+	pcSvc := service.NewPublicContentService(pcRepo)
+	pcHdl := handler.NewPublicContentHandler(pcSvc)
 
 	// Setup router
 	r := gin.Default()
@@ -57,10 +57,10 @@ func main() {
 		{
 			public.GET("/site-config", hdl.GetSiteConfig)
 			
-			// Sprint 2 Routes
-			public.GET("/warta/latest/download", s2Hdl.GetLatestWarta)
-			public.GET("/announcements/latest", s2Hdl.GetLatestAnnouncements)
-			public.GET("/ministry-activities/latest", s2Hdl.GetLatestMinistryActivities)
+			// Public Content Routes
+			public.GET("/warta/latest/download", pcHdl.GetLatestWarta)
+			public.GET("/announcements/latest", pcHdl.GetLatestAnnouncements)
+			public.GET("/ministry-activities/latest", pcHdl.GetLatestMinistryActivities)
 		}
 	}
 

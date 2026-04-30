@@ -5,21 +5,21 @@ import (
 	"github.com/yayanberutu/churchwebsite/backend/internal/entity"
 )
 
-type Sprint2Repository interface {
+type PublicContentRepository interface {
 	GetLatestWarta() (*entity.Warta, error)
 	GetLatestAnnouncements() ([]entity.Announcement, error)
 	GetLatestMinistryActivities() ([]entity.MinistryActivity, error)
 }
 
-type mysqlSprint2Repository struct {
+type mysqlPublicContentRepository struct {
 	db *sql.DB
 }
 
-func NewSprint2Repository(db *sql.DB) Sprint2Repository {
-	return &mysqlSprint2Repository{db: db}
+func NewPublicContentRepository(db *sql.DB) PublicContentRepository {
+	return &mysqlPublicContentRepository{db: db}
 }
 
-func (r *mysqlSprint2Repository) GetLatestWarta() (*entity.Warta, error) {
+func (r *mysqlPublicContentRepository) GetLatestWarta() (*entity.Warta, error) {
 	var warta entity.Warta
 	err := r.db.QueryRow("SELECT id, title, file_url, created_at FROM wartas ORDER BY created_at DESC LIMIT 1").Scan(
 		&warta.ID, &warta.Title, &warta.FileURL, &warta.CreatedAt,
@@ -30,7 +30,7 @@ func (r *mysqlSprint2Repository) GetLatestWarta() (*entity.Warta, error) {
 	return &warta, nil
 }
 
-func (r *mysqlSprint2Repository) GetLatestAnnouncements() ([]entity.Announcement, error) {
+func (r *mysqlPublicContentRepository) GetLatestAnnouncements() ([]entity.Announcement, error) {
 	rows, err := r.db.Query("SELECT id, title, target_audience, created_at FROM announcements ORDER BY created_at DESC LIMIT 3")
 	if err != nil {
 		return nil, err
@@ -48,7 +48,7 @@ func (r *mysqlSprint2Repository) GetLatestAnnouncements() ([]entity.Announcement
 	return announcements, nil
 }
 
-func (r *mysqlSprint2Repository) GetLatestMinistryActivities() ([]entity.MinistryActivity, error) {
+func (r *mysqlPublicContentRepository) GetLatestMinistryActivities() ([]entity.MinistryActivity, error) {
 	rows, err := r.db.Query("SELECT id, name, image_url, short_caption, created_at FROM ministry_activities ORDER BY created_at DESC LIMIT 3")
 	if err != nil {
 		return nil, err

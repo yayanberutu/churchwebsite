@@ -6,15 +6,15 @@ import (
 	"github.com/yayanberutu/churchwebsite/backend/internal/service"
 )
 
-type Sprint2Handler struct {
-	service service.Sprint2Service
+type PublicContentHandler struct {
+	service service.PublicContentService
 }
 
-func NewSprint2Handler(s service.Sprint2Service) *Sprint2Handler {
-	return &Sprint2Handler{service: s}
+func NewPublicContentHandler(s service.PublicContentService) *PublicContentHandler {
+	return &PublicContentHandler{service: s}
 }
 
-func (h *Sprint2Handler) GetLatestWarta(c *gin.Context) {
+func (h *PublicContentHandler) GetLatestWarta(c *gin.Context) {
 	warta, err := h.service.GetLatestWarta()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -32,7 +32,7 @@ func (h *Sprint2Handler) GetLatestWarta(c *gin.Context) {
 	})
 }
 
-func (h *Sprint2Handler) GetLatestAnnouncements(c *gin.Context) {
+func (h *PublicContentHandler) GetLatestAnnouncements(c *gin.Context) {
 	announcements, err := h.service.GetLatestAnnouncements()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -50,7 +50,7 @@ func (h *Sprint2Handler) GetLatestAnnouncements(c *gin.Context) {
 	})
 }
 
-func (h *Sprint2Handler) GetLatestMinistryActivities(c *gin.Context) {
+func (h *PublicContentHandler) GetLatestMinistryActivities(c *gin.Context) {
 	activities, err := h.service.GetLatestMinistryActivities()
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
