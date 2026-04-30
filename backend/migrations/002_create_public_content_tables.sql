@@ -1,4 +1,4 @@
--- backend/migrations/002_add_sprint2_tables.sql
+-- backend/migrations/002_create_public_content_tables.sql
 
 CREATE TABLE IF NOT EXISTS wartas (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
