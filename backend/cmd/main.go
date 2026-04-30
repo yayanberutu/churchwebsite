@@ -28,10 +28,15 @@ func main() {
 	}
 	defer db.Close()
 
-	// Initialize layers
+	// Initialize Sprint 1 layers
 	repo := repository.NewSiteConfigRepository(db)
 	svc := service.NewSiteConfigService(repo)
 	hdl := handler.NewSiteConfigHandler(svc)
+
+	// Initialize Public Content layers (Warta, Announcements, Activities)
+	pcRepo := repository.NewPublicContentRepository(db)
+	pcSvc := service.NewPublicContentService(pcRepo)
+	pcHdl := handler.NewPublicContentHandler(pcSvc)
 
 	// Setup router
 	r := gin.Default()
@@ -51,6 +56,11 @@ func main() {
 		public := v1.Group("/public")
 		{
 			public.GET("/site-config", hdl.GetSiteConfig)
+			
+			// Public Content Routes
+			public.GET("/warta/latest/download", pcHdl.GetLatestWarta)
+			public.GET("/announcements/latest", pcHdl.GetLatestAnnouncements)
+			public.GET("/ministry-activities/latest", pcHdl.GetLatestMinistryActivities)
 		}
 	}
 
