@@ -34,3 +34,47 @@ export const fetchLatestMinistryActivities = async () => {
     return { success: false, message: error.message };
   }
 };
+
+export const fetchWorshipSchedules = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/worship-schedules`);
+    if (!response.ok) throw new Error("Gagal mengambil jadwal ibadah");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching worship schedules:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+export const fetchDailyVerse = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/daily-verses/today`);
+    if (!response.ok) throw new Error("Gagal mengambil ayat harian");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching daily verse:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+export const fetchUpcomingActivities = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/upcoming-activities`);
+    if (!response.ok) throw new Error("Gagal mengambil kegiatan mendatang");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching upcoming activities:", error);
+    return { success: false, message: error.message };
+  }
+};
+
+export const fetchDailyDevotional = async () => {
+  try {
+    const response = await fetch(`${BASE_URL}/daily-devotionals/today`);
+    if (!response.ok) throw new Error("Gagal mengambil renungan harian");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching daily devotional:", error);
+    return { success: false, message: error.message };
+  }
+};

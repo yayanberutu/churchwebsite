@@ -9,6 +9,10 @@ type PublicContentRepository interface {
 	GetLatestWarta() (*entity.Warta, error)
 	GetLatestAnnouncements() ([]entity.Announcement, error)
 	GetLatestMinistryActivities() ([]entity.MinistryActivity, error)
+	GetWorshipSchedules() ([]entity.WorshipSchedule, error)
+	GetDailyVerseByDate(date string) (*entity.DailyVerse, error)
+	GetUpcomingActivities() ([]entity.UpcomingActivity, error)
+	GetDailyDevotionalByDate(date string) (*entity.DailyDevotional, error)
 }
 
 type mysqlPublicContentRepository struct {
@@ -64,4 +68,62 @@ func (r *mysqlPublicContentRepository) GetLatestMinistryActivities() ([]entity.M
 		activities = append(activities, a)
 	}
 	return activities, nil
+}
+
+func (r *mysqlPublicContentRepository) GetWorshipSchedules() ([]entity.WorshipSchedule, error) {
+	rows, err := r.db.Query("SELECT id, name, schedule_time, location, created_at FROM worship_schedules")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var schedules []entity.WorshipSchedule
+	for rows.Next() {
+		var s entity.WorshipSchedule
+		if err := rows.Scan(&s.ID, &s.Name, &s.ScheduleTime, &s.Location, &s.CreatedAt); err != nil {
+			return nil, err
+		}
+		schedules = append(schedules, s)
+	}
+	return schedules, nil
+}
+
+func (r *mysqlPublicContentRepository) GetDailyVerseByDate(date string) (*entity.DailyVerse, error) {
+	var v entity.DailyVerse
+	err := r.db.QueryRow("SELECT id, reference, content, date, created_at FROM daily_verses WHERE date = ?", date).Scan(
+		&v.ID, &v.Reference, &v.Content, &v.Date, &v.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &v, nil
+}
+
+func (r *mysqlPublicContentRepository) GetUpcomingActivities() ([]entity.UpcomingActivity, error) {
+	rows, err := r.db.Query("SELECT id, title, date, time_string, location, created_at FROM upcoming_activities ORDER BY date ASC LIMIT 3")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var activities []entity.UpcomingActivity
+	for rows.Next() {
+		var a entity.UpcomingActivity
+		if err := rows.Scan(&a.ID, &a.Title, &a.Date, &a.TimeString, &a.Location, &a.CreatedAt); err != nil {
+			return nil, err
+		}
+		activities = append(activities, a)
+	}
+	return activities, nil
+}
+
+func (r *mysqlPublicContentRepository) GetDailyDevotionalByDate(date string) (*entity.DailyDevotional, error) {
+	var d entity.DailyDevotional
+	err := r.db.QueryRow("SELECT id, title, youtube_url, date, created_at FROM daily_devotionals WHERE date = ?", date).Scan(
+		&d.ID, &d.Title, &d.YoutubeURL, &d.Date, &d.CreatedAt,
+	)
+	if err != nil {
+		return nil, err
+	}
+	return &d, nil
 }

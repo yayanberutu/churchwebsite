@@ -61,6 +61,10 @@ func main() {
 			public.GET("/warta/latest/download", pcHdl.GetLatestWarta)
 			public.GET("/announcements/latest", pcHdl.GetLatestAnnouncements)
 			public.GET("/ministry-activities/latest", pcHdl.GetLatestMinistryActivities)
+			public.GET("/worship-schedules", pcHdl.GetWorshipSchedules)
+			public.GET("/daily-verses/today", pcHdl.GetDailyVerse)
+			public.GET("/upcoming-activities", pcHdl.GetUpcomingActivities)
+			public.GET("/daily-devotionals/today", pcHdl.GetDailyDevotional)
 		}
 	}
 
