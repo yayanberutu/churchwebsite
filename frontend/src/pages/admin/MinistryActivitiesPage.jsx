@@ -17,7 +17,7 @@ const MinistryActivitiesPage = () => {
     try {
       setIsLoading(true);
       const response = await ministryActivityApi.getAll();
-      setActivities(response.data.data);
+      setActivities(response.data.data || []);
     } catch (error) {
       console.error('Error fetching activities:', error);
     } finally {
@@ -161,16 +161,16 @@ const MinistryActivitiesPage = () => {
                   <p className="text-xs font-bold text-on-surface/40 uppercase tracking-widest">Pilih Foto Kegiatan</p>
                 </div>
               )}
+              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+                <Camera className="text-white" />
+              </div>
               <input 
                 type="file" 
                 name="image" 
                 onChange={handleImageChange}
-                className="absolute inset-0 opacity-0 cursor-pointer"
+                className="absolute inset-0 opacity-0 cursor-pointer z-10"
                 required={!currentActivity}
               />
-              <div className="absolute inset-0 bg-black/40 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
-                <Camera className="text-white" />
-              </div>
             </div>
             <p className="text-[10px] text-center text-on-surface/40 font-bold uppercase tracking-widest px-8">Disarankan menggunakan foto landscape dengan kualitas tinggi.</p>
           </div>

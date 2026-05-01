@@ -12,7 +12,6 @@ type PublicContentRepository interface {
 	GetWorshipSchedules() ([]entity.WorshipSchedule, error)
 	GetDailyVerseByDate(date string) (*entity.DailyVerse, error)
 	GetUpcomingActivities() ([]entity.UpcomingActivity, error)
-	GetDailyDevotionalByDate(date string) (*entity.DailyDevotional, error)
 }
 
 type mysqlPublicContentRepository struct {
@@ -29,6 +28,9 @@ func (r *mysqlPublicContentRepository) GetLatestWarta() (*entity.Warta, error) {
 		&warta.ID, &warta.Title, &warta.FileURL, &warta.CreatedAt,
 	)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &warta, nil
@@ -90,10 +92,13 @@ func (r *mysqlPublicContentRepository) GetWorshipSchedules() ([]entity.WorshipSc
 
 func (r *mysqlPublicContentRepository) GetDailyVerseByDate(date string) (*entity.DailyVerse, error) {
 	var v entity.DailyVerse
-	err := r.db.QueryRow("SELECT id, reference, content, date, created_at FROM daily_verses WHERE date = ?", date).Scan(
-		&v.ID, &v.Reference, &v.Content, &v.Date, &v.CreatedAt,
+	err := r.db.QueryRow("SELECT id, reference, content, devotional_title, devotional_url, date, created_at FROM daily_verses WHERE date = ?", date).Scan(
+		&v.ID, &v.Reference, &v.Content, &v.DevotionalTitle, &v.DevotionalURL, &v.Date, &v.CreatedAt,
 	)
 	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
 		return nil, err
 	}
 	return &v, nil
@@ -117,13 +122,4 @@ func (r *mysqlPublicContentRepository) GetUpcomingActivities() ([]entity.Upcomin
 	return activities, nil
 }
 
-func (r *mysqlPublicContentRepository) GetDailyDevotionalByDate(date string) (*entity.DailyDevotional, error) {
-	var d entity.DailyDevotional
-	err := r.db.QueryRow("SELECT id, title, youtube_url, date, created_at FROM daily_devotionals WHERE date = ?", date).Scan(
-		&d.ID, &d.Title, &d.YoutubeURL, &d.Date, &d.CreatedAt,
-	)
-	if err != nil {
-		return nil, err
-	}
-	return &d, nil
-}
+

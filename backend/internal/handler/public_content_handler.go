@@ -15,7 +15,7 @@ func NewPublicContentHandler(s service.PublicContentService) *PublicContentHandl
 }
 
 func (h *PublicContentHandler) GetLatestWarta(c *gin.Context) {
-	warta, err := h.service.GetLatestWarta()
+	warta, err := h.service.GetLatestWarta(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -33,7 +33,7 @@ func (h *PublicContentHandler) GetLatestWarta(c *gin.Context) {
 }
 
 func (h *PublicContentHandler) GetLatestAnnouncements(c *gin.Context) {
-	announcements, err := h.service.GetLatestAnnouncements()
+	announcements, err := h.service.GetLatestAnnouncements(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -51,7 +51,7 @@ func (h *PublicContentHandler) GetLatestAnnouncements(c *gin.Context) {
 }
 
 func (h *PublicContentHandler) GetLatestMinistryActivities(c *gin.Context) {
-	activities, err := h.service.GetLatestMinistryActivities()
+	activities, err := h.service.GetLatestMinistryActivities(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -69,7 +69,7 @@ func (h *PublicContentHandler) GetLatestMinistryActivities(c *gin.Context) {
 }
 
 func (h *PublicContentHandler) GetWorshipSchedules(c *gin.Context) {
-	schedules, err := h.service.GetWorshipSchedules()
+	schedules, err := h.service.GetWorshipSchedules(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -88,7 +88,7 @@ func (h *PublicContentHandler) GetWorshipSchedules(c *gin.Context) {
 
 func (h *PublicContentHandler) GetDailyVerse(c *gin.Context) {
 	date := c.Query("date")
-	verse, err := h.service.GetDailyVerse(date)
+	verse, err := h.service.GetDailyVerse(c.Request.Context(), date)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -106,7 +106,7 @@ func (h *PublicContentHandler) GetDailyVerse(c *gin.Context) {
 }
 
 func (h *PublicContentHandler) GetUpcomingActivities(c *gin.Context) {
-	activities, err := h.service.GetUpcomingActivities()
+	activities, err := h.service.GetUpcomingActivities(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,
@@ -123,21 +123,4 @@ func (h *PublicContentHandler) GetUpcomingActivities(c *gin.Context) {
 	})
 }
 
-func (h *PublicContentHandler) GetDailyDevotional(c *gin.Context) {
-	date := c.Query("date")
-	devotional, err := h.service.GetDailyDevotional(date)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"success": false,
-			"message": "Failed to fetch daily devotional",
-			"data":    nil,
-		})
-		return
-	}
 
-	c.JSON(http.StatusOK, gin.H{
-		"success": true,
-		"message": "Daily devotional fetched successfully",
-		"data":    devotional,
-	})
-}

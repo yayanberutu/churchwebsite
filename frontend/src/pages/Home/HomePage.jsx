@@ -3,7 +3,6 @@ import React, { useState, useEffect } from 'react';
 import Header from '../../components/Header/Header';
 import HeroSection from '../../components/HeroSection/HeroSection';
 import DailyVerse from '../../components/DailyVerse/DailyVerse';
-import DailyDevotional from '../../components/DailyDevotional/DailyDevotional';
 import UpcomingEvents from '../../components/UpcomingEvents/UpcomingEvents';
 import Announcements from '../../components/Announcements/Announcements';
 import MinistryActivities from '../../components/MinistryActivities/MinistryActivities';
@@ -75,7 +74,6 @@ const HomePage = () => {
       <main className="flex-grow">
         <HeroSection />
         <DailyVerse />
-        <DailyDevotional />
         <UpcomingEvents />
         <Announcements />
         <MinistryActivities />

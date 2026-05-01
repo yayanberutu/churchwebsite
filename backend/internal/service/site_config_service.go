@@ -1,12 +1,13 @@
 package service
 
 import (
+	"context"
 	"github.com/yayanberutu/churchwebsite/backend/internal/entity"
 	"github.com/yayanberutu/churchwebsite/backend/internal/repository"
 )
 
 type SiteConfigService interface {
-	GetSiteConfig() (*entity.SiteConfig, error)
+	GetSiteConfig(ctx context.Context) (*entity.SiteConfig, error)
 }
 
 type siteConfigService struct {
@@ -17,7 +18,7 @@ func NewSiteConfigService(repo repository.SiteConfigRepository) SiteConfigServic
 	return &siteConfigService{repo: repo}
 }
 
-func (s *siteConfigService) GetSiteConfig() (*entity.SiteConfig, error) {
+func (s *siteConfigService) GetSiteConfig(ctx context.Context) (*entity.SiteConfig, error) {
 	church, err := s.repo.GetChurch()
 	if err != nil {
 		return nil, err

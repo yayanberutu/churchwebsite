@@ -24,9 +24,10 @@ export const dailyVerseApi = {
 export const wartaApi = {
   getAll: () => api.get('/wartas'),
   create: (formData) => api.post('/wartas', formData, {
-    headers: {
-      'Content-Type': 'multipart/form-data',
-    },
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+  update: (id, formData) => api.put(`/wartas/${id}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
   }),
   delete: (id) => api.delete(`/wartas/${id}`),
 };

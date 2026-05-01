@@ -19,7 +19,7 @@ const WorshipSchedulePage = () => {
     try {
       setIsLoading(true);
       const response = await worshipScheduleApi.getAll();
-      setSchedules(response.data.data);
+      setSchedules(response.data.data || []);
     } catch (error) {
       console.error('Error fetching schedules:', error);
     } finally {

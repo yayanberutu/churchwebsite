@@ -1,6 +1,7 @@
 package handler
 
 import (
+	"log"
 	"net/http"
 	"strconv"
 	"time"
@@ -11,16 +12,17 @@ import (
 )
 
 type AdminHandler struct {
-	svc service.AdminService
+	svc     service.AdminService
+	storage service.StorageService
 }
 
-func NewAdminHandler(svc service.AdminService) *AdminHandler {
-	return &AdminHandler{svc: svc}
+func NewAdminHandler(svc service.AdminService, storage service.StorageService) *AdminHandler {
+	return &AdminHandler{svc: svc, storage: storage}
 }
 
-// Worship Schedules
+// ==================== Worship Schedules ====================
 func (h *AdminHandler) GetAllWorshipSchedules(c *gin.Context) {
-	schedules, err := h.svc.GetAllWorshipSchedules()
+	schedules, err := h.svc.GetAllWorshipSchedules(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
@@ -34,7 +36,7 @@ func (h *AdminHandler) CreateWorshipSchedule(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
-	if err := h.svc.CreateWorshipSchedule(&s); err != nil {
+	if err := h.svc.CreateWorshipSchedule(c.Request.Context(), &s); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -48,7 +50,7 @@ func (h *AdminHandler) UpdateWorshipSchedule(c *gin.Context) {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
-	if err := h.svc.UpdateWorshipSchedule(id, &s); err != nil {
+	if err := h.svc.UpdateWorshipSchedule(c.Request.Context(), id, &s); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -57,16 +59,16 @@ func (h *AdminHandler) UpdateWorshipSchedule(c *gin.Context) {
 
 func (h *AdminHandler) DeleteWorshipSchedule(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err := h.svc.DeleteWorshipSchedule(id); err != nil {
+	if err := h.svc.DeleteWorshipSchedule(c.Request.Context(), id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Deleted successfully"})
 }
 
-// Daily Verses
+// ==================== Daily Verses ====================
 func (h *AdminHandler) GetAllDailyVerses(c *gin.Context) {
-	verses, err := h.svc.GetAllDailyVerses()
+	verses, err := h.svc.GetAllDailyVerses(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
@@ -76,28 +78,29 @@ func (h *AdminHandler) GetAllDailyVerses(c *gin.Context) {
 
 func (h *AdminHandler) CreateDailyVerse(c *gin.Context) {
 	var input struct {
-		Reference string `json:"reference" binding:"required"`
-		Content   string `json:"content" binding:"required"`
-		Date      string `json:"date" binding:"required"`
+		Reference       string `json:"reference" binding:"required"`
+		Content         string `json:"content" binding:"required"`
+		DevotionalTitle string `json:"devotional_title"`
+		DevotionalURL   string `json:"devotional_url"`
+		Date            string `json:"date" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
-
 	date, err := time.Parse("2006-01-02", input.Date)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid date format, use YYYY-MM-DD"})
 		return
 	}
-
 	v := entity.DailyVerse{
-		Reference: input.Reference,
-		Content:   input.Content,
-		Date:      date,
+		Reference:       input.Reference,
+		Content:         input.Content,
+		DevotionalTitle: input.DevotionalTitle,
+		DevotionalURL:   input.DevotionalURL,
+		Date:            date,
 	}
-
-	if err := h.svc.CreateDailyVerse(&v); err != nil {
+	if err := h.svc.CreateDailyVerse(c.Request.Context(), &v); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -107,28 +110,29 @@ func (h *AdminHandler) CreateDailyVerse(c *gin.Context) {
 func (h *AdminHandler) UpdateDailyVerse(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	var input struct {
-		Reference string `json:"reference" binding:"required"`
-		Content   string `json:"content" binding:"required"`
-		Date      string `json:"date" binding:"required"`
+		Reference       string `json:"reference" binding:"required"`
+		Content         string `json:"content" binding:"required"`
+		DevotionalTitle string `json:"devotional_title"`
+		DevotionalURL   string `json:"devotional_url"`
+		Date            string `json:"date" binding:"required"`
 	}
 	if err := c.ShouldBindJSON(&input); err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
 		return
 	}
-
 	date, err := time.Parse("2006-01-02", input.Date)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid date format, use YYYY-MM-DD"})
 		return
 	}
-
 	v := entity.DailyVerse{
-		Reference: input.Reference,
-		Content:   input.Content,
-		Date:      date,
+		Reference:       input.Reference,
+		Content:         input.Content,
+		DevotionalTitle: input.DevotionalTitle,
+		DevotionalURL:   input.DevotionalURL,
+		Date:            date,
 	}
-
-	if err := h.svc.UpdateDailyVerse(id, &v); err != nil {
+	if err := h.svc.UpdateDailyVerse(c.Request.Context(), id, &v); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -137,16 +141,16 @@ func (h *AdminHandler) UpdateDailyVerse(c *gin.Context) {
 
 func (h *AdminHandler) DeleteDailyVerse(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err := h.svc.DeleteDailyVerse(id); err != nil {
+	if err := h.svc.DeleteDailyVerse(c.Request.Context(), id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Deleted successfully"})
 }
 
-// Announcements
+// ==================== Announcements ====================
 func (h *AdminHandler) GetAllAnnouncements(c *gin.Context) {
-	announcements, err := h.svc.GetAllAnnouncements()
+	announcements, err := h.svc.GetAllAnnouncements(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
@@ -158,15 +162,25 @@ func (h *AdminHandler) CreateAnnouncement(c *gin.Context) {
 	title := c.PostForm("title")
 	content := c.PostForm("content")
 	targetAudience := c.PostForm("target_audience")
-	
+
 	var attachments []entity.AnnouncementAttachment
 	form, err := c.MultipartForm()
 	if err == nil && form != nil {
-		files := form.File["attachments"]
-		for _, file := range files {
+		for _, file := range form.File["attachments"] {
+			fileURL := "/uploads/announcements/" + file.Filename // fallback
+			if h.storage != nil {
+				openedFile, ferr := file.Open()
+				if ferr == nil {
+					url, uerr := h.storage.UploadFile(c.Request.Context(), openedFile, file, "announcements")
+					openedFile.Close()
+					if uerr == nil {
+						fileURL = url
+					}
+				}
+			}
 			attachments = append(attachments, entity.AnnouncementAttachment{
 				FileName: file.Filename,
-				FileURL:  "/uploads/announcements/" + file.Filename,
+				FileURL:  fileURL,
 			})
 		}
 	}
@@ -177,8 +191,7 @@ func (h *AdminHandler) CreateAnnouncement(c *gin.Context) {
 		TargetAudience: targetAudience,
 		Attachments:    attachments,
 	}
-
-	if err := h.svc.CreateAnnouncement(&a); err != nil {
+	if err := h.svc.CreateAnnouncement(c.Request.Context(), &a); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -190,15 +203,25 @@ func (h *AdminHandler) UpdateAnnouncement(c *gin.Context) {
 	title := c.PostForm("title")
 	content := c.PostForm("content")
 	targetAudience := c.PostForm("target_audience")
-	
+
 	var attachments []entity.AnnouncementAttachment
 	form, err := c.MultipartForm()
 	if err == nil && form != nil {
-		files := form.File["attachments"]
-		for _, file := range files {
+		for _, file := range form.File["attachments"] {
+			fileURL := "/uploads/announcements/" + file.Filename
+			if h.storage != nil {
+				openedFile, ferr := file.Open()
+				if ferr == nil {
+					url, uerr := h.storage.UploadFile(c.Request.Context(), openedFile, file, "announcements")
+					openedFile.Close()
+					if uerr == nil {
+						fileURL = url
+					}
+				}
+			}
 			attachments = append(attachments, entity.AnnouncementAttachment{
 				FileName: file.Filename,
-				FileURL:  "/uploads/announcements/" + file.Filename,
+				FileURL:  fileURL,
 			})
 		}
 	}
@@ -209,8 +232,7 @@ func (h *AdminHandler) UpdateAnnouncement(c *gin.Context) {
 		TargetAudience: targetAudience,
 		Attachments:    attachments,
 	}
-
-	if err := h.svc.UpdateAnnouncement(id, &a); err != nil {
+	if err := h.svc.UpdateAnnouncement(c.Request.Context(), id, &a); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -219,16 +241,16 @@ func (h *AdminHandler) UpdateAnnouncement(c *gin.Context) {
 
 func (h *AdminHandler) DeleteAnnouncement(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err := h.svc.DeleteAnnouncement(id); err != nil {
+	if err := h.svc.DeleteAnnouncement(c.Request.Context(), id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Deleted successfully"})
 }
 
-// Wartas
+// ==================== Wartas ====================
 func (h *AdminHandler) GetAllWartas(c *gin.Context) {
-	wartas, err := h.svc.GetAllWartas()
+	wartas, err := h.svc.GetAllWartas(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
@@ -238,40 +260,96 @@ func (h *AdminHandler) GetAllWartas(c *gin.Context) {
 
 func (h *AdminHandler) CreateWarta(c *gin.Context) {
 	title := c.PostForm("title")
-	file, err := c.FormFile("file")
+	dateStr := c.PostForm("date")
+
+	date, err := time.Parse("2006-01-02", dateStr)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "File is required"})
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid date format, use YYYY-MM-DD"})
 		return
 	}
 
-	// In a real app, you would upload to S3 or a local storage
-	// For this demo, we'll just mock the URL
-	fileURL := "/uploads/" + file.Filename
-	
-	w := entity.Warta{
-		Title:   title,
-		FileURL: fileURL,
+	file, err := c.FormFile("file")
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "PDF file is required"})
+		return
 	}
 
-	if err := h.svc.CreateWarta(&w); err != nil {
+	fileURL := "/uploads/" + file.Filename // fallback
+	if h.storage != nil {
+		openedFile, ferr := file.Open()
+		if ferr == nil {
+			url, uerr := h.storage.UploadFile(c.Request.Context(), openedFile, file, "wartas")
+			openedFile.Close()
+			if uerr == nil {
+				fileURL = url
+			} else {
+				log.Printf("[ERROR] Failed to upload Warta to R2: %v", uerr)
+			}
+		} else {
+			log.Printf("[ERROR] Failed to open Warta file: %v", ferr)
+		}
+	}
+
+	w := entity.Warta{Title: title, FileURL: fileURL, Date: date}
+	if err := h.svc.CreateWarta(c.Request.Context(), &w); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
 	c.JSON(http.StatusCreated, gin.H{"success": true, "data": w})
 }
 
+func (h *AdminHandler) UpdateWarta(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	title := c.PostForm("title")
+	dateStr := c.PostForm("date")
+
+	date, err := time.Parse("2006-01-02", dateStr)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid date format, use YYYY-MM-DD"})
+		return
+	}
+
+	// Use existing file URL by default
+	existingFileURL := c.PostForm("existing_file_url")
+	fileURL := existingFileURL
+
+	// Upload new file if provided
+	file, ferr := c.FormFile("file")
+	if ferr == nil && file != nil && h.storage != nil {
+		openedFile, foerr := file.Open()
+		if foerr == nil {
+			url, uerr := h.storage.UploadFile(c.Request.Context(), openedFile, file, "wartas")
+			openedFile.Close()
+			if uerr == nil {
+				fileURL = url
+			} else {
+				log.Printf("[ERROR] Failed to upload new Warta to R2: %v", uerr)
+			}
+		} else {
+			log.Printf("[ERROR] Failed to open new Warta file: %v", foerr)
+		}
+	}
+
+	w := entity.Warta{Title: title, FileURL: fileURL, Date: date}
+	if err := h.svc.UpdateWarta(c.Request.Context(), id, &w); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": w})
+}
+
 func (h *AdminHandler) DeleteWarta(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err := h.svc.DeleteWarta(id); err != nil {
+	if err := h.svc.DeleteWarta(c.Request.Context(), id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Deleted successfully"})
 }
 
-// Ministry Activities
+// ==================== Ministry Activities ====================
 func (h *AdminHandler) GetAllMinistryActivities(c *gin.Context) {
-	activities, err := h.svc.GetAllMinistryActivities()
+	activities, err := h.svc.GetAllMinistryActivities(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
@@ -282,21 +360,26 @@ func (h *AdminHandler) GetAllMinistryActivities(c *gin.Context) {
 func (h *AdminHandler) CreateMinistryActivity(c *gin.Context) {
 	name := c.PostForm("name")
 	shortCaption := c.PostForm("short_caption")
-	file, err := c.FormFile("image")
-	
+
 	imageURL := ""
+	file, err := c.FormFile("image")
 	if err == nil && file != nil {
-		// Mock URL
-		imageURL = "/uploads/activities/" + file.Filename
+		if h.storage != nil {
+			openedFile, ferr := file.Open()
+			if ferr == nil {
+				url, uerr := h.storage.UploadFile(c.Request.Context(), openedFile, file, "ministry_activities")
+				openedFile.Close()
+				if uerr == nil {
+					imageURL = url
+				}
+			}
+		} else {
+			imageURL = "/uploads/activities/" + file.Filename
+		}
 	}
 
-	a := entity.MinistryActivity{
-		Name:         name,
-		ShortCaption: shortCaption,
-		ImageURL:     imageURL,
-	}
-
-	if err := h.svc.CreateMinistryActivity(&a); err != nil {
+	a := entity.MinistryActivity{Name: name, ShortCaption: shortCaption, ImageURL: imageURL}
+	if err := h.svc.CreateMinistryActivity(c.Request.Context(), &a); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -307,23 +390,27 @@ func (h *AdminHandler) UpdateMinistryActivity(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
 	name := c.PostForm("name")
 	shortCaption := c.PostForm("short_caption")
-	file, err := c.FormFile("image")
-	
-	a := entity.MinistryActivity{
-		ID:           id,
-		Name:         name,
-		ShortCaption: shortCaption,
+
+	imageURL := c.PostForm("existing_image_url") // keep existing by default
+
+	file, ferr := c.FormFile("image")
+	if ferr == nil && file != nil {
+		if h.storage != nil {
+			openedFile, foerr := file.Open()
+			if foerr == nil {
+				url, uerr := h.storage.UploadFile(c.Request.Context(), openedFile, file, "ministry_activities")
+				openedFile.Close()
+				if uerr == nil {
+					imageURL = url
+				}
+			}
+		} else {
+			imageURL = "/uploads/activities/" + file.Filename
+		}
 	}
 
-	if err == nil && file != nil {
-		a.ImageURL = "/uploads/activities/" + file.Filename
-	} else {
-		// Keep existing URL if no new image uploaded
-		existingImage := c.PostForm("existing_image_url")
-		a.ImageURL = existingImage
-	}
-
-	if err := h.svc.UpdateMinistryActivity(id, &a); err != nil {
+	a := entity.MinistryActivity{ID: id, Name: name, ShortCaption: shortCaption, ImageURL: imageURL}
+	if err := h.svc.UpdateMinistryActivity(c.Request.Context(), id, &a); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
@@ -332,7 +419,7 @@ func (h *AdminHandler) UpdateMinistryActivity(c *gin.Context) {
 
 func (h *AdminHandler) DeleteMinistryActivity(c *gin.Context) {
 	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
-	if err := h.svc.DeleteMinistryActivity(id); err != nil {
+	if err := h.svc.DeleteMinistryActivity(c.Request.Context(), id); err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
 		return
 	}
