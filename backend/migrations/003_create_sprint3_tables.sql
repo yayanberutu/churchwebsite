@@ -38,19 +38,19 @@ CREATE TABLE IF NOT EXISTS daily_devotionals (
 );
 
 -- Seed data for testing
-INSERT INTO worship_schedules (name, schedule_time, location) VALUES 
-('Ibadah Minggu Pagi (Sekolah Minggu)', 'Minggu, 07:00 WIB', 'Gedung Sekolah Minggu'),
-('Ibadah Minggu Umum I', 'Minggu, 09:00 WIB', 'Gedung Gereja Utama'),
-('Ibadah Minggu Umum II', 'Minggu, 11:00 WIB', 'Gedung Gereja Utama'),
-('Ibadah Minggu Sore', 'Minggu, 17:00 WIB', 'Gedung Gereja Utama');
+REPLACE INTO worship_schedules (id, name, schedule_time, location) VALUES 
+(1, 'Ibadah Minggu Pagi (Sekolah Minggu)', 'Minggu, 07:00 WIB', 'Gedung Sekolah Minggu'),
+(2, 'Ibadah Minggu Umum I', 'Minggu, 09:00 WIB', 'Gedung Gereja Utama'),
+(3, 'Ibadah Minggu Umum II', 'Minggu, 11:00 WIB', 'Gedung Gereja Utama'),
+(4, 'Ibadah Minggu Sore', 'Minggu, 17:00 WIB', 'Gedung Gereja Utama');
 
-INSERT INTO daily_verses (reference, content, date) VALUES 
-('Yohanes 3:16', 'Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal, supaya setiap orang yang percaya kepada-Nya tidak binasa, melainkan beroleh hidup yang kekal.', '2026-05-01');
+REPLACE INTO daily_verses (id, reference, content, date) VALUES 
+(1, 'Yohanes 3:16', 'Karena begitu besar kasih Allah akan dunia ini, sehingga Ia telah mengaruniakan Anak-Nya yang tunggal, supaya setiap orang yang percaya kepada-Nya tidak binasa, melainkan beroleh hidup yang kekal.', '2026-05-01');
 
-INSERT INTO upcoming_activities (title, date, time_string, location) VALUES 
-('Ibadah Padang Pemuda', '2026-05-15', '08.00 - Selesai', 'Taman Wisata Cibubur'),
-('Latihan Paduan Suara Gabungan', '2026-05-03', '19.00 WIB', 'Ruang Konsistori'),
-('Rapat Panitia Natal 2026', '2026-05-10', '14.00 WIB', 'Ruang Rapat Lantai 2');
+REPLACE INTO upcoming_activities (id, title, date, time_string, location) VALUES 
+(1, 'Ibadah Padang Pemuda', '2026-05-15', '08.00 - Selesai', 'Taman Wisata Cibubur'),
+(2, 'Latihan Paduan Suara Gabungan', '2026-05-03', '19.00 WIB', 'Ruang Konsistori'),
+(3, 'Rapat Panitia Natal 2026', '2026-05-10', '14.00 WIB', 'Ruang Rapat Lantai 2');
 
-INSERT INTO daily_devotionals (title, youtube_url, date) VALUES 
-('Renungan Pagi: Kasih Karunia yang Melimpah', 'https://www.youtube.com/embed/dQw4w9WgXcQ', '2026-05-01');
+REPLACE INTO daily_devotionals (id, title, youtube_url, date) VALUES 
+(1, 'Renungan Pagi: Kasih Karunia yang Melimpah', 'https://youtu.be/fIRmFRj7frc?si=f1TmOZ2ibSTHPoEl', '2026-05-01');

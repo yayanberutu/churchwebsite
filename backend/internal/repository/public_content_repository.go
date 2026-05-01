@@ -35,7 +35,7 @@ func (r *mysqlPublicContentRepository) GetLatestWarta() (*entity.Warta, error) {
 }
 
 func (r *mysqlPublicContentRepository) GetLatestAnnouncements() ([]entity.Announcement, error) {
-	rows, err := r.db.Query("SELECT id, title, target_audience, created_at FROM announcements ORDER BY created_at DESC LIMIT 3")
+	rows, err := r.db.Query("SELECT id, title, content, target_audience, created_at FROM announcements ORDER BY created_at DESC LIMIT 3")
 	if err != nil {
 		return nil, err
 	}
@@ -44,7 +44,7 @@ func (r *mysqlPublicContentRepository) GetLatestAnnouncements() ([]entity.Announ
 	var announcements []entity.Announcement
 	for rows.Next() {
 		var a entity.Announcement
-		if err := rows.Scan(&a.ID, &a.Title, &a.TargetAudience, &a.CreatedAt); err != nil {
+		if err := rows.Scan(&a.ID, &a.Title, &a.Content, &a.TargetAudience, &a.CreatedAt); err != nil {
 			return nil, err
 		}
 		announcements = append(announcements, a)

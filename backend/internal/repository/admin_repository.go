@@ -1,0 +1,293 @@
+package repository
+
+import (
+	"database/sql"
+	"github.com/yayanberutu/churchwebsite/backend/internal/entity"
+)
+
+type AdminRepository interface {
+	// Worship Schedules
+	GetAllWorshipSchedules() ([]entity.WorshipSchedule, error)
+	CreateWorshipSchedule(s *entity.WorshipSchedule) error
+	UpdateWorshipSchedule(s *entity.WorshipSchedule) error
+	DeleteWorshipSchedule(id int64) error
+
+	// Daily Verses
+	GetAllDailyVerses() ([]entity.DailyVerse, error)
+	CreateDailyVerse(v *entity.DailyVerse) error
+	UpdateDailyVerse(v *entity.DailyVerse) error
+	DeleteDailyVerse(id int64) error
+
+	// Announcements
+	GetAllAnnouncements() ([]entity.Announcement, error)
+	CreateAnnouncement(a *entity.Announcement) error
+	UpdateAnnouncement(a *entity.Announcement) error
+	DeleteAnnouncement(id int64) error
+
+	// Wartas
+	GetAllWartas() ([]entity.Warta, error)
+	CreateWarta(w *entity.Warta) error
+	DeleteWarta(id int64) error
+
+	// Ministry Activities
+	GetAllMinistryActivities() ([]entity.MinistryActivity, error)
+	CreateMinistryActivity(a *entity.MinistryActivity) error
+	UpdateMinistryActivity(a *entity.MinistryActivity) error
+	DeleteMinistryActivity(id int64) error
+}
+
+type mysqlAdminRepository struct {
+	db *sql.DB
+}
+
+func NewAdminRepository(db *sql.DB) AdminRepository {
+	return &mysqlAdminRepository{db: db}
+}
+
+// Worship Schedules
+func (r *mysqlAdminRepository) GetAllWorshipSchedules() ([]entity.WorshipSchedule, error) {
+	rows, err := r.db.Query("SELECT id, name, schedule_time, location, created_at, updated_at FROM worship_schedules ORDER BY created_at DESC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var schedules []entity.WorshipSchedule
+	for rows.Next() {
+		var s entity.WorshipSchedule
+		if err := rows.Scan(&s.ID, &s.Name, &s.ScheduleTime, &s.Location, &s.CreatedAt, &s.UpdatedAt); err != nil {
+			return nil, err
+		}
+		schedules = append(schedules, s)
+	}
+	return schedules, nil
+}
+
+func (r *mysqlAdminRepository) CreateWorshipSchedule(s *entity.WorshipSchedule) error {
+	res, err := r.db.Exec("INSERT INTO worship_schedules (name, schedule_time, location) VALUES (?, ?, ?)", 
+		s.Name, s.ScheduleTime, s.Location)
+	if err != nil {
+		return err
+	}
+	s.ID, _ = res.LastInsertId()
+	return nil
+}
+
+func (r *mysqlAdminRepository) UpdateWorshipSchedule(s *entity.WorshipSchedule) error {
+	_, err := r.db.Exec("UPDATE worship_schedules SET name = ?, schedule_time = ?, location = ? WHERE id = ?", 
+		s.Name, s.ScheduleTime, s.Location, s.ID)
+	return err
+}
+
+func (r *mysqlAdminRepository) DeleteWorshipSchedule(id int64) error {
+	_, err := r.db.Exec("DELETE FROM worship_schedules WHERE id = ?", id)
+	return err
+}
+
+// Daily Verses
+func (r *mysqlAdminRepository) GetAllDailyVerses() ([]entity.DailyVerse, error) {
+	rows, err := r.db.Query("SELECT id, reference, content, date, created_at, updated_at FROM daily_verses ORDER BY date DESC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var verses []entity.DailyVerse
+	for rows.Next() {
+		var v entity.DailyVerse
+		if err := rows.Scan(&v.ID, &v.Reference, &v.Content, &v.Date, &v.CreatedAt, &v.UpdatedAt); err != nil {
+			return nil, err
+		}
+		verses = append(verses, v)
+	}
+	return verses, nil
+}
+
+func (r *mysqlAdminRepository) CreateDailyVerse(v *entity.DailyVerse) error {
+	res, err := r.db.Exec("INSERT INTO daily_verses (reference, content, date) VALUES (?, ?, ?)", 
+		v.Reference, v.Content, v.Date)
+	if err != nil {
+		return err
+	}
+	v.ID, _ = res.LastInsertId()
+	return nil
+}
+
+func (r *mysqlAdminRepository) UpdateDailyVerse(v *entity.DailyVerse) error {
+	_, err := r.db.Exec("UPDATE daily_verses SET reference = ?, content = ?, date = ? WHERE id = ?", 
+		v.Reference, v.Content, v.Date, v.ID)
+	return err
+}
+
+func (r *mysqlAdminRepository) DeleteDailyVerse(id int64) error {
+	_, err := r.db.Exec("DELETE FROM daily_verses WHERE id = ?", id)
+	return err
+}
+
+// Announcements
+func (r *mysqlAdminRepository) GetAllAnnouncements() ([]entity.Announcement, error) {
+	rows, err := r.db.Query("SELECT id, title, content, target_audience, created_at, updated_at FROM announcements ORDER BY created_at DESC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var announcements []entity.Announcement
+	for rows.Next() {
+		var a entity.Announcement
+		if err := rows.Scan(&a.ID, &a.Title, &a.Content, &a.TargetAudience, &a.CreatedAt, &a.UpdatedAt); err != nil {
+			return nil, err
+		}
+
+		// Fetch attachments for each announcement
+		attRows, err := r.db.Query("SELECT id, announcement_id, file_name, file_url, created_at FROM announcement_attachments WHERE announcement_id = ?", a.ID)
+		if err == nil {
+			for attRows.Next() {
+				var att entity.AnnouncementAttachment
+				if err := attRows.Scan(&att.ID, &att.AnnouncementID, &att.FileName, &att.FileURL, &att.CreatedAt); err == nil {
+					a.Attachments = append(a.Attachments, att)
+				}
+			}
+			attRows.Close()
+		}
+
+		announcements = append(announcements, a)
+	}
+	return announcements, nil
+}
+
+func (r *mysqlAdminRepository) CreateAnnouncement(a *entity.Announcement) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	res, err := tx.Exec("INSERT INTO announcements (title, content, target_audience) VALUES (?, ?, ?)", 
+		a.Title, a.Content, a.TargetAudience)
+	if err != nil {
+		return err
+	}
+	a.ID, _ = res.LastInsertId()
+
+	// Insert attachments
+	for _, att := range a.Attachments {
+		_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)", 
+			a.ID, att.FileName, att.FileURL)
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
+}
+
+func (r *mysqlAdminRepository) UpdateAnnouncement(a *entity.Announcement) error {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return err
+	}
+	defer tx.Rollback()
+
+	_, err = tx.Exec("UPDATE announcements SET title = ?, content = ?, target_audience = ? WHERE id = ?", 
+		a.Title, a.Content, a.TargetAudience, a.ID)
+	if err != nil {
+		return err
+	}
+
+	// Update attachments: Simple approach is delete all and re-insert for this demo
+	// In production, you'd compare and only insert/delete needed ones
+	_, err = tx.Exec("DELETE FROM announcement_attachments WHERE announcement_id = ?", a.ID)
+	if err != nil {
+		return err
+	}
+
+	for _, att := range a.Attachments {
+		_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)", 
+			a.ID, att.FileName, att.FileURL)
+		if err != nil {
+			return err
+		}
+	}
+
+	return tx.Commit()
+}
+
+func (r *mysqlAdminRepository) DeleteAnnouncement(id int64) error {
+	_, err := r.db.Exec("DELETE FROM announcements WHERE id = ?", id)
+	return err
+}
+
+// Wartas
+func (r *mysqlAdminRepository) GetAllWartas() ([]entity.Warta, error) {
+	rows, err := r.db.Query("SELECT id, title, file_url, created_at, updated_at FROM wartas ORDER BY created_at DESC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var wartas []entity.Warta
+	for rows.Next() {
+		var w entity.Warta
+		if err := rows.Scan(&w.ID, &w.Title, &w.FileURL, &w.CreatedAt, &w.UpdatedAt); err != nil {
+			return nil, err
+		}
+		wartas = append(wartas, w)
+	}
+	return wartas, nil
+}
+
+func (r *mysqlAdminRepository) CreateWarta(w *entity.Warta) error {
+	res, err := r.db.Exec("INSERT INTO wartas (title, file_url) VALUES (?, ?)", 
+		w.Title, w.FileURL)
+	if err != nil {
+		return err
+	}
+	w.ID, _ = res.LastInsertId()
+	return nil
+}
+
+func (r *mysqlAdminRepository) DeleteWarta(id int64) error {
+	_, err := r.db.Exec("DELETE FROM wartas WHERE id = ?", id)
+	return err
+}
+
+// Ministry Activities
+func (r *mysqlAdminRepository) GetAllMinistryActivities() ([]entity.MinistryActivity, error) {
+	rows, err := r.db.Query("SELECT id, name, image_url, short_caption, created_at, updated_at FROM ministry_activities ORDER BY created_at DESC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var activities []entity.MinistryActivity
+	for rows.Next() {
+		var a entity.MinistryActivity
+		if err := rows.Scan(&a.ID, &a.Name, &a.ImageURL, &a.ShortCaption, &a.CreatedAt, &a.UpdatedAt); err != nil {
+			return nil, err
+		}
+		activities = append(activities, a)
+	}
+	return activities, nil
+}
+
+func (r *mysqlAdminRepository) CreateMinistryActivity(a *entity.MinistryActivity) error {
+	res, err := r.db.Exec("INSERT INTO ministry_activities (name, image_url, short_caption) VALUES (?, ?, ?)", 
+		a.Name, a.ImageURL, a.ShortCaption)
+	if err != nil {
+		return err
+	}
+	a.ID, _ = res.LastInsertId()
+	return nil
+}
+
+func (r *mysqlAdminRepository) UpdateMinistryActivity(a *entity.MinistryActivity) error {
+	_, err := r.db.Exec("UPDATE ministry_activities SET name = ?, image_url = ?, short_caption = ? WHERE id = ?", 
+		a.Name, a.ImageURL, a.ShortCaption, a.ID)
+	return err
+}
+
+func (r *mysqlAdminRepository) DeleteMinistryActivity(id int64) error {
+	_, err := r.db.Exec("DELETE FROM ministry_activities WHERE id = ?", id)
+	return err
+}

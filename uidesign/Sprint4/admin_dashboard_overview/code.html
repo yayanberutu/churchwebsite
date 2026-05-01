@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Dashboard - HKBP Kernolong</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&amp;family=Public+Sans:wght@300;400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container": "#edeeef",
+                    "on-tertiary": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "secondary-fixed": "#ffdada",
+                    "on-tertiary-container": "#f39461",
+                    "tertiary-container": "#6e2c00",
+                    "error": "#ba1a1a",
+                    "surface": "#f8f9fa",
+                    "primary-container": "#1e3a8a",
+                    "on-primary-fixed-variant": "#264191",
+                    "secondary": "#af2b3e",
+                    "on-background": "#191c1d",
+                    "on-secondary-container": "#680018",
+                    "on-primary": "#ffffff",
+                    "surface-container-low": "#f3f4f5",
+                    "outline": "#757682",
+                    "primary-fixed": "#dce1ff",
+                    "on-primary-container": "#90a8ff",
+                    "on-surface-variant": "#444651",
+                    "secondary-fixed-dim": "#ffb3b5",
+                    "inverse-on-surface": "#f0f1f2",
+                    "on-secondary-fixed": "#40000b",
+                    "surface-bright": "#f8f9fa",
+                    "tertiary-fixed-dim": "#ffb691",
+                    "surface-container-high": "#e7e8e9",
+                    "surface-container-lowest": "#ffffff",
+                    "on-primary-fixed": "#00164e",
+                    "error-container": "#ffdad6",
+                    "primary-fixed-dim": "#b6c4ff",
+                    "on-error-container": "#93000a",
+                    "surface-tint": "#4059aa",
+                    "tertiary-fixed": "#ffdbcb",
+                    "tertiary": "#4b1c00",
+                    "surface-variant": "#e1e3e4",
+                    "primary": "#00236f",
+                    "surface-container-highest": "#e1e3e4",
+                    "on-tertiary-fixed": "#341100",
+                    "outline-variant": "#c5c5d3",
+                    "on-tertiary-fixed-variant": "#773205",
+                    "inverse-primary": "#b6c4ff",
+                    "on-error": "#ffffff",
+                    "inverse-surface": "#2e3132",
+                    "background": "#f8f9fa",
+                    "secondary-container": "#fd6673",
+                    "surface-dim": "#d9dadb",
+                    "on-surface": "#191c1d",
+                    "on-secondary-fixed-variant": "#8e0f28"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {},
+            "fontFamily": {
+                    "headline": [
+                            "Public Sans"
+                    ],
+                    "display": [
+                            "Public Sans"
+                    ],
+                    "body": [
+                            "Be Vietnam Pro"
+                    ],
+                    "label": [
+                            "Be Vietnam Pro"
+                    ]
+            },
+            "fontSize": {}
+    },
+        },
+      }
+    </script>
+<style>
+        /* Custom overrides to ensure absolute adherence to the design system's no-line rule for general content */
+        * { border-color: transparent; }
+        .ghost-border:focus-within { border-color: rgba(197, 197, 211, 0.15); }
+    </style>
+</head>
+<body class="bg-background text-on-surface font-body antialiased selection:bg-primary-container selection:text-on-primary-container min-h-screen overflow-x-hidden">
+<!-- SideNavBar (Shared Component JSON) -->
+<nav class="w-[240px] h-screen fixed left-0 top-0 bg-[#f3f4f5] dark:bg-slate-900 shadow-[40px_0_60px_-15px_rgba(0,0,0,0.05)] flex flex-col py-8 z-50 overflow-y-auto">
+<!-- Brand Header -->
+<div class="px-8 mb-10">
+<div class="flex items-center gap-4 mb-2">
+<div class="w-10 h-10 rounded-full bg-primary flex items-center justify-center overflow-hidden shrink-0">
+<span class="material-symbols-outlined text-on-primary" style="font-variation-settings: 'FILL' 1;">church</span>
+</div>
+<div>
+<h1 class="text-xl font-bold text-[#00236f] dark:text-blue-200 font-['Public_Sans'] tracking-tight">HKBP Kernolong</h1>
+<p class="text-xs text-slate-500 font-medium tracking-wide uppercase mt-0.5">Admin Console</p>
+</div>
+</div>
+</div>
+<!-- Navigation Links -->
+<div class="flex-1 space-y-1">
+<!-- Active Tab: Dashboard -->
+<a class="text-[#00236f] dark:text-blue-300 font-bold bg-[#ffffff] dark:bg-slate-800 rounded-l-full ml-4 pl-4 py-3 font-['Public_Sans'] tracking-tight flex items-center gap-4 scale-[0.98] active:scale-95 transition-transform" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">dashboard</span>
+<span class="text-sm">Dashboard</span>
+</a>
+<!-- Inactive Tabs -->
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#00236f] dark:hover:text-blue-300 px-8 py-3 hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all duration-300 scale-[0.98] active:scale-95 flex items-center gap-4 font-['Public_Sans'] tracking-tight" href="#">
+<span class="material-symbols-outlined">calendar_month</span>
+<span class="text-sm font-medium">Jadwal Ibadah</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#00236f] dark:hover:text-blue-300 px-8 py-3 hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all duration-300 scale-[0.98] active:scale-95 flex items-center gap-4 font-['Public_Sans'] tracking-tight" href="#">
+<span class="material-symbols-outlined">menu_book</span>
+<span class="text-sm font-medium">Ayat Harian</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#00236f] dark:hover:text-blue-300 px-8 py-3 hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all duration-300 scale-[0.98] active:scale-95 flex items-center gap-4 font-['Public_Sans'] tracking-tight" href="#">
+<span class="material-symbols-outlined">event</span>
+<span class="text-sm font-medium">Kegiatan</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#00236f] dark:hover:text-blue-300 px-8 py-3 hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all duration-300 scale-[0.98] active:scale-95 flex items-center gap-4 font-['Public_Sans'] tracking-tight" href="#">
+<span class="material-symbols-outlined">campaign</span>
+<span class="text-sm font-medium">Pengumuman</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#00236f] dark:hover:text-blue-300 px-8 py-3 hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all duration-300 scale-[0.98] active:scale-95 flex items-center gap-4 font-['Public_Sans'] tracking-tight" href="#">
+<span class="material-symbols-outlined">view_quilt</span>
+<span class="text-sm font-medium">Menu Header</span>
+</a>
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#00236f] dark:hover:text-blue-300 px-8 py-3 hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all duration-300 scale-[0.98] active:scale-95 flex items-center gap-4 font-['Public_Sans'] tracking-tight" href="#">
+<span class="material-symbols-outlined">newspaper</span>
+<span class="text-sm font-medium">Warta</span>
+</a>
+</div>
+<!-- Footer Action -->
+<div class="mt-auto pt-8">
+<a class="text-slate-500 dark:text-slate-400 hover:text-[#00236f] dark:hover:text-blue-300 px-8 py-3 hover:bg-[#ffffff]/50 dark:hover:bg-slate-800/50 transition-all duration-300 scale-[0.98] active:scale-95 flex items-center gap-4 font-['Public_Sans'] tracking-tight" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="text-sm font-medium">Logout</span>
+</a>
+</div>
+</nav>
+<!-- TopAppBar (Shared Component JSON) -->
+<header class="fixed top-0 right-0 w-[calc(100%-240px)] h-16 bg-[#f8f9fa]/80 dark:bg-slate-900/80 backdrop-blur-xl flex justify-between items-center px-10 z-40">
+<div class="flex items-center">
+<h2 class="text-lg font-black text-[#00236f] dark:text-white font-['Public_Sans'] font-medium">Admin Dashboard</h2>
+</div>
+<div class="flex items-center gap-6">
+<!-- Trailing Icons -->
+<button class="text-[#00236f] dark:text-blue-400 hover:text-[#af2b3e] transition-colors opacity-90 hover:opacity-100 flex items-center justify-center relative">
+<span class="material-symbols-outlined">notifications</span>
+<span class="absolute top-0 right-0 w-2 h-2 bg-secondary rounded-full border border-background"></span>
+</button>
+<button class="text-[#00236f] dark:text-blue-400 hover:text-[#af2b3e] transition-colors opacity-90 hover:opacity-100 flex items-center justify-center">
+<span class="material-symbols-outlined">settings</span>
+</button>
+<!-- Trailing Action -->
+<button class="text-sm font-bold text-[#00236f] hover:text-[#af2b3e] transition-colors bg-surface-container-low px-4 py-2 rounded-full font-display">
+                Logout
+            </button>
+</div>
+</header>
+<!-- Main Content Canvas -->
+<main class="ml-[240px] mt-16 p-10 max-w-7xl">
+<!-- Editorial Header -->
+<section class="mb-12 max-w-3xl">
+<h2 class="font-display text-5xl font-bold text-primary tracking-tight mb-4">Overview</h2>
+<p class="text-lg text-on-surface-variant max-w-2xl leading-relaxed">
+                A high-level summary of congregational activities, recent announcements, and digital engagement for HKBP Kernolong.
+            </p>
+</section>
+<!-- Bento Grid Overview (Tonal Layering, No Lines) -->
+<section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-16">
+<!-- Primary Highlight Card (Gradient) -->
+<div class="md:col-span-2 bg-gradient-to-br from-primary to-primary-container rounded-2xl p-8 text-on-primary relative overflow-hidden flex flex-col justify-between min-h-[240px]">
+<!-- Subtle background decorative element -->
+<div class="absolute -right-10 -bottom-10 opacity-10 pointer-events-none">
+<span class="material-symbols-outlined text-[200px]" style="font-variation-settings: 'FILL' 1;">church</span>
+</div>
+<div class="relative z-10 flex justify-between items-start">
+<div>
+<p class="text-primary-fixed-dim font-medium uppercase tracking-widest text-xs mb-2">Total Congregation</p>
+<h3 class="font-display text-5xl font-bold mb-1">1,248</h3>
+<p class="text-sm text-primary-fixed flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">trending_up</span>
+                            +12 this month
+                        </p>
+</div>
+<div class="bg-surface-container/20 backdrop-blur-md rounded-full p-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">groups</span>
+</div>
+</div>
+<div class="relative z-10 mt-8">
+<button class="text-sm font-semibold text-primary bg-on-primary px-5 py-2.5 rounded-full inline-flex items-center gap-2 hover:bg-surface-container transition-colors shadow-[0_10px_30px_rgba(0,0,0,0.1)]">
+                        View Directory
+                        <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Secondary Stat Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-outline font-medium uppercase tracking-widest text-xs mb-2">Active Events</p>
+<h3 class="font-display text-4xl font-bold text-primary">14</h3>
+</div>
+<div class="text-secondary bg-secondary/10 rounded-full p-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">event_upcoming</span>
+</div>
+</div>
+<div class="space-y-3">
+<div class="flex items-center justify-between text-sm">
+<span class="text-on-surface-variant">This Week</span>
+<span class="font-bold text-primary">5</span>
+</div>
+<div class="w-full bg-surface-container-low rounded-full h-1.5">
+<div class="bg-secondary h-1.5 rounded-full" style="width: 35%"></div>
+</div>
+</div>
+</div>
+<!-- Tertiary Stat Card -->
+<div class="bg-surface-container-lowest rounded-2xl p-8 flex flex-col justify-between">
+<div class="flex justify-between items-start mb-6">
+<div>
+<p class="text-outline font-medium uppercase tracking-widest text-xs mb-2">Announcements</p>
+<h3 class="font-display text-4xl font-bold text-primary">8</h3>
+</div>
+<div class="text-tertiary-container bg-tertiary-container/10 rounded-full p-3">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">campaign</span>
+</div>
+</div>
+<div class="flex items-center gap-2 text-sm text-on-surface-variant mt-auto">
+<span class="material-symbols-outlined text-[16px] text-tertiary-container">schedule</span>
+                    2 scheduled for Sunday
+                </div>
+</div>
+<!-- Image/Highlight Card -->
+<div class="md:col-span-2 relative rounded-2xl overflow-hidden min-h-[200px] flex items-end p-6 group">
+<!-- Using gradient as placeholder to avoid strict image rules issues, but adding data-alt as requested for any background-image/element -->
+<div class="absolute inset-0 bg-surface-container-high data-bg-img" data-alt="A striking digital installation art piece featuring glowing, generative geometric shapes suspended in a vast, minimalist gallery space. The room is illuminated by high-key, soft white lighting that creates a bright, modern light-mode aesthetic. The artwork relies on a sophisticated palette of deep blacks and pristine whites, punctuated by intense accents of vibrant red. The mood is serene yet technologically advanced.">
+<img alt="Church interior" class="w-full h-full object-cover opacity-60 mix-blend-multiply" data-alt="A beautifully lit, high-end photograph of a traditional church interior during a morning service. Sun rays stream through tall stained-glass windows, illuminating the polished wooden pews and the congregation gathered in quiet reverence. The overall color palette is warm and inviting, dominated by rich mahogany tones, soft golden light, and subtle accents of deep primary blue and maroon. The mood is highly spiritual, peaceful, and formally elegant, perfectly embodying the 'Reverent Echo' design philosophy." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDnApepTLlmw0DB-Oqyq65OVe0Jj9YXi8sfvUqwjallzZpsxKgWZnkfjYr--Kyqn_5cvNCLhp6KR2mM-yst4jMHFIq8azxWC229jgi8RuK1acVBFCgZHxY6oGizYUhnH4esDBE0gmsQA0KsOkqjClb8ln62JTSwsw-V8AUTcL21esx6iY9IMKFK2SNcgG8gFhMVdnc45kI0iHAwy0f-KdMCtLU7p7E5JB3MQKawk_KmkOpOUrO38qpctiNcYhHab0LXAo57T0UxnD4"/>
+</div>
+<div class="absolute inset-0 bg-gradient-to-t from-primary/90 via-primary/40 to-transparent"></div>
+<div class="relative z-10 w-full flex justify-between items-end">
+<div>
+<span class="px-3 py-1 bg-secondary text-white text-xs font-bold rounded-full mb-3 inline-block uppercase tracking-wider">Latest Sermon</span>
+<h4 class="font-display text-2xl font-bold text-white mb-1">Kasih Karunia dan Damai Sejahtera</h4>
+<p class="text-primary-fixed-dim text-sm">Sunday, Oct 24 • Ps. Johannes</p>
+</div>
+<button class="w-10 h-10 rounded-full bg-white/20 backdrop-blur-md flex items-center justify-center text-white hover:bg-white/30 transition-colors">
+<span class="material-symbols-outlined">play_arrow</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Recent Activity Log (Editorial List without lines) -->
+<section class="max-w-4xl">
+<div class="flex justify-between items-end mb-8">
+<h3 class="font-display text-2xl font-bold text-primary">Recent Activity Log</h3>
+<a class="text-sm font-semibold text-secondary hover:text-on-secondary-container transition-colors flex items-center gap-1" href="#">
+                    View All <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</a>
+</div>
+<div class="bg-surface-container-lowest rounded-2xl p-8 space-y-8 shadow-[0_20px_40px_-15px_rgba(0,0,0,0.02)]">
+<!-- Log Item 1 -->
+<div class="flex gap-6 group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">edit_document</span>
+</div>
+<div>
+<h4 class="text-base font-semibold text-on-surface mb-1">Warta Jemaat updated for Sunday Service</h4>
+<p class="text-sm text-on-surface-variant mb-2">Admin added 3 new announcements regarding upcoming choir practice and youth retreat.</p>
+<span class="text-xs font-medium text-outline uppercase tracking-wider">2 hours ago • Warta</span>
+</div>
+</div>
+<!-- Log Item 2 -->
+<div class="flex gap-6 group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 group-hover:bg-secondary/5 transition-colors">
+<span class="material-symbols-outlined text-outline group-hover:text-secondary transition-colors">menu_book</span>
+</div>
+<div>
+<h4 class="text-base font-semibold text-on-surface mb-1">Ayat Harian published: Romans 8:28</h4>
+<p class="text-sm text-on-surface-variant mb-2">Daily scripture and devotional content has been scheduled for tomorrow morning.</p>
+<span class="text-xs font-medium text-outline uppercase tracking-wider">5 hours ago • Ayat Harian</span>
+</div>
+</div>
+<!-- Log Item 3 -->
+<div class="flex gap-6 group cursor-pointer">
+<div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center shrink-0 group-hover:bg-primary/5 transition-colors">
+<span class="material-symbols-outlined text-outline group-hover:text-primary transition-colors">event_available</span>
+</div>
+<div>
+<h4 class="text-base font-semibold text-on-surface mb-1">New Event: Pemahaman Alkitab (Bible Study)</h4>
+<p class="text-sm text-on-surface-variant mb-2">Weekly Bible study session created for Thursday evening at the main hall.</p>
+<span class="text-xs font-medium text-outline uppercase tracking-wider">Yesterday • Kegiatan</span>
+</div>
+</div>
+</div>
+</section>
+</main>
+</body></html>

@@ -84,8 +84,8 @@ const Announcements = () => {
               <h3 className="font-headline text-xl font-bold text-primary mb-3 leading-tight">
                 {item.title}
               </h3>
-              <p className="font-body text-on-surface-variant text-sm line-clamp-2">
-                {item.snippet || "Lihat detail pengumuman untuk informasi lebih lanjut."}
+              <p className="font-body text-on-surface-variant text-sm line-clamp-3 overflow-hidden">
+                {item.content || "Lihat detail pengumuman untuk informasi lebih lanjut."}
               </p>
             </div>
           ))}
