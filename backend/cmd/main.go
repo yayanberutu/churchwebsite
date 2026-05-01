@@ -38,6 +38,11 @@ func main() {
 	pcSvc := service.NewPublicContentService(pcRepo)
 	pcHdl := handler.NewPublicContentHandler(pcSvc)
 
+	// Initialize Admin layers
+	adminRepo := repository.NewAdminRepository(db)
+	adminSvc := service.NewAdminService(adminRepo)
+	adminHdl := handler.NewAdminHandler(adminSvc)
+
 	// Setup router
 	r := gin.Default()
 
@@ -61,6 +66,43 @@ func main() {
 			public.GET("/warta/latest/download", pcHdl.GetLatestWarta)
 			public.GET("/announcements/latest", pcHdl.GetLatestAnnouncements)
 			public.GET("/ministry-activities/latest", pcHdl.GetLatestMinistryActivities)
+			public.GET("/worship-schedules", pcHdl.GetWorshipSchedules)
+			public.GET("/daily-verses/today", pcHdl.GetDailyVerse)
+			public.GET("/upcoming-activities", pcHdl.GetUpcomingActivities)
+			public.GET("/daily-devotionals/today", pcHdl.GetDailyDevotional)
+		}
+
+		// Admin Routes
+		admin := v1.Group("/admin")
+		{
+			// Worship Schedules
+			admin.GET("/worship-schedules", adminHdl.GetAllWorshipSchedules)
+			admin.POST("/worship-schedules", adminHdl.CreateWorshipSchedule)
+			admin.PUT("/worship-schedules/:id", adminHdl.UpdateWorshipSchedule)
+			admin.DELETE("/worship-schedules/:id", adminHdl.DeleteWorshipSchedule)
+
+			// Daily Verses
+			admin.GET("/daily-verses", adminHdl.GetAllDailyVerses)
+			admin.POST("/daily-verses", adminHdl.CreateDailyVerse)
+			admin.PUT("/daily-verses/:id", adminHdl.UpdateDailyVerse)
+			admin.DELETE("/daily-verses/:id", adminHdl.DeleteDailyVerse)
+
+			// Announcements
+			admin.GET("/announcements", adminHdl.GetAllAnnouncements)
+			admin.POST("/announcements", adminHdl.CreateAnnouncement)
+			admin.PUT("/announcements/:id", adminHdl.UpdateAnnouncement)
+			admin.DELETE("/announcements/:id", adminHdl.DeleteAnnouncement)
+
+			// Warta
+			admin.GET("/wartas", adminHdl.GetAllWartas)
+			admin.POST("/wartas", adminHdl.CreateWarta)
+			admin.DELETE("/wartas/:id", adminHdl.DeleteWarta)
+
+			// Ministry Activities
+			admin.GET("/ministry-activities", adminHdl.GetAllMinistryActivities)
+			admin.POST("/ministry-activities", adminHdl.CreateMinistryActivity)
+			admin.PUT("/ministry-activities/:id", adminHdl.UpdateMinistryActivity)
+			admin.DELETE("/ministry-activities/:id", adminHdl.DeleteMinistryActivity)
 		}
 	}
 
