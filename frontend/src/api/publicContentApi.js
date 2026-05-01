@@ -68,13 +68,3 @@ export const fetchUpcomingActivities = async () => {
   }
 };
 
-export const fetchDailyDevotional = async () => {
-  try {
-    const response = await fetch(`${BASE_URL}/daily-devotionals/today`);
-    if (!response.ok) throw new Error("Gagal mengambil renungan harian");
-    return await response.json();
-  } catch (error) {
-    console.error("Error fetching daily devotional:", error);
-    return { success: false, message: error.message };
-  }
-};

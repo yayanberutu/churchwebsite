@@ -20,7 +20,7 @@ const DailyVersePage = () => {
       setIsLoading(true);
       const response = await dailyVerseApi.getAll();
       // Format dates for display
-      const data = response.data.data.map(v => ({
+      const data = (response.data.data || []).map(v => ({
         ...v,
         date: v.date.split('T')[0] // Assuming backend sends ISO string
       }));
@@ -107,7 +107,16 @@ const DailyVersePage = () => {
                   <p className="text-lg font-medium text-on-surface leading-relaxed mb-4 italic">
                     "{verse.content}"
                   </p>
-                  <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {(verse.devotional_title || verse.devotional_url) && (
+                    <div className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/10">
+                      <p className="text-[10px] font-bold text-primary uppercase tracking-widest mb-1">Renungan Terkait</p>
+                      <p className="text-sm font-bold text-on-surface">{verse.devotional_title || 'Video Renungan'}</p>
+                      {verse.devotional_url && (
+                        <p className="text-xs text-primary truncate mt-1">{verse.devotional_url}</p>
+                      )}
+                    </div>
+                  )}
+                  <div className="flex items-center justify-end gap-3 opacity-0 group-hover:opacity-100 transition-opacity mt-4">
                     <Button variant="ghost" className="px-4 py-2" onClick={() => { setCurrentVerse(verse); setIsModalOpen(true); }}>
                       <Edit2 size={16} /> Edit
                     </Button>
@@ -157,6 +166,23 @@ const DailyVersePage = () => {
             defaultValue={currentVerse?.content} 
             required 
           />
+          <div className="pt-4 border-t border-outline-variant">
+            <p className="text-xs font-bold text-primary uppercase tracking-widest mb-4">Materi Renungan (Opsional)</p>
+            <div className="space-y-4">
+              <Input 
+                label="Tema Renungan" 
+                name="devotional_title" 
+                placeholder="Contoh: Menghadapi Badai Kehidupan" 
+                defaultValue={currentVerse?.devotional_title} 
+              />
+              <Input 
+                label="URL Video Renungan (YouTube)" 
+                name="devotional_url" 
+                placeholder="https://youtube.com/watch?v=..." 
+                defaultValue={currentVerse?.devotional_url} 
+              />
+            </div>
+          </div>
         </form>
       </Modal>
     </div>

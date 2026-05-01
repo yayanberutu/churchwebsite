@@ -1,19 +1,20 @@
 package service
 
 import (
+	"context"
 	"time"
+
 	"github.com/yayanberutu/churchwebsite/backend/internal/entity"
 	"github.com/yayanberutu/churchwebsite/backend/internal/repository"
 )
 
 type PublicContentService interface {
-	GetLatestWarta() (*entity.Warta, error)
-	GetLatestAnnouncements() ([]entity.Announcement, error)
-	GetLatestMinistryActivities() ([]entity.MinistryActivity, error)
-	GetWorshipSchedules() ([]entity.WorshipSchedule, error)
-	GetDailyVerse(date string) (*entity.DailyVerse, error)
-	GetUpcomingActivities() ([]entity.UpcomingActivity, error)
-	GetDailyDevotional(date string) (*entity.DailyDevotional, error)
+	GetLatestWarta(ctx context.Context) (*entity.Warta, error)
+	GetLatestAnnouncements(ctx context.Context) ([]entity.Announcement, error)
+	GetLatestMinistryActivities(ctx context.Context) ([]entity.MinistryActivity, error)
+	GetWorshipSchedules(ctx context.Context) ([]entity.WorshipSchedule, error)
+	GetDailyVerse(ctx context.Context, date string) (*entity.DailyVerse, error)
+	GetUpcomingActivities(ctx context.Context) ([]entity.UpcomingActivity, error)
 }
 
 type publicContentService struct {
@@ -24,36 +25,30 @@ func NewPublicContentService(repo repository.PublicContentRepository) PublicCont
 	return &publicContentService{repo: repo}
 }
 
-func (s *publicContentService) GetLatestWarta() (*entity.Warta, error) {
+func (s *publicContentService) GetLatestWarta(ctx context.Context) (*entity.Warta, error) {
 	return s.repo.GetLatestWarta()
 }
 
-func (s *publicContentService) GetLatestAnnouncements() ([]entity.Announcement, error) {
+func (s *publicContentService) GetLatestAnnouncements(ctx context.Context) ([]entity.Announcement, error) {
 	return s.repo.GetLatestAnnouncements()
 }
 
-func (s *publicContentService) GetLatestMinistryActivities() ([]entity.MinistryActivity, error) {
+func (s *publicContentService) GetLatestMinistryActivities(ctx context.Context) ([]entity.MinistryActivity, error) {
 	return s.repo.GetLatestMinistryActivities()
 }
 
-func (s *publicContentService) GetWorshipSchedules() ([]entity.WorshipSchedule, error) {
+func (s *publicContentService) GetWorshipSchedules(ctx context.Context) ([]entity.WorshipSchedule, error) {
 	return s.repo.GetWorshipSchedules()
 }
 
-func (s *publicContentService) GetDailyVerse(date string) (*entity.DailyVerse, error) {
+func (s *publicContentService) GetDailyVerse(ctx context.Context, date string) (*entity.DailyVerse, error) {
 	if date == "" {
 		date = time.Now().Format("2006-01-02")
 	}
 	return s.repo.GetDailyVerseByDate(date)
 }
 
-func (s *publicContentService) GetUpcomingActivities() ([]entity.UpcomingActivity, error) {
+func (s *publicContentService) GetUpcomingActivities(ctx context.Context) ([]entity.UpcomingActivity, error) {
 	return s.repo.GetUpcomingActivities()
 }
 
-func (s *publicContentService) GetDailyDevotional(date string) (*entity.DailyDevotional, error) {
-	if date == "" {
-		date = time.Now().Format("2006-01-02")
-	}
-	return s.repo.GetDailyDevotionalByDate(date)
-}

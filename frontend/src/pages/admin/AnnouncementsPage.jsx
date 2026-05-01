@@ -187,7 +187,9 @@ const AnnouncementsPage = () => {
             </div>
 
             <div className="flex flex-col gap-1.5 w-full">
-              <label className="text-xs font-bold text-on-surface/50 uppercase tracking-wider ml-1">Lampiran (Multiple)</label>
+              <label className="text-xs font-bold text-on-surface/50 uppercase tracking-wider ml-1">
+                Lampiran {currentAnnouncement && <span className="normal-case font-normal">(upload baru akan mengganti yang lama)</span>}
+              </label>
               <input 
                 type="file"
                 name="attachments"

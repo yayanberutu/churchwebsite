@@ -26,8 +26,16 @@ type AdminRepository interface {
 
 	// Wartas
 	GetAllWartas() ([]entity.Warta, error)
+	GetWartaByID(id int64) (*entity.Warta, error)
 	CreateWarta(w *entity.Warta) error
+	UpdateWarta(w *entity.Warta) error
 	DeleteWarta(id int64) error
+
+	// Announcement helpers for R2 cleanup
+	GetAnnouncementAttachmentURLs(announcementID int64) ([]string, error)
+
+	// Ministry Activity helper for R2 cleanup
+	GetMinistryActivityImageURL(id int64) (string, error)
 
 	// Ministry Activities
 	GetAllMinistryActivities() ([]entity.MinistryActivity, error)
@@ -86,7 +94,7 @@ func (r *mysqlAdminRepository) DeleteWorshipSchedule(id int64) error {
 
 // Daily Verses
 func (r *mysqlAdminRepository) GetAllDailyVerses() ([]entity.DailyVerse, error) {
-	rows, err := r.db.Query("SELECT id, reference, content, date, created_at, updated_at FROM daily_verses ORDER BY date DESC")
+	rows, err := r.db.Query("SELECT id, reference, content, devotional_title, devotional_url, date, created_at, updated_at FROM daily_verses ORDER BY date DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -95,7 +103,7 @@ func (r *mysqlAdminRepository) GetAllDailyVerses() ([]entity.DailyVerse, error) 
 	var verses []entity.DailyVerse
 	for rows.Next() {
 		var v entity.DailyVerse
-		if err := rows.Scan(&v.ID, &v.Reference, &v.Content, &v.Date, &v.CreatedAt, &v.UpdatedAt); err != nil {
+		if err := rows.Scan(&v.ID, &v.Reference, &v.Content, &v.DevotionalTitle, &v.DevotionalURL, &v.Date, &v.CreatedAt, &v.UpdatedAt); err != nil {
 			return nil, err
 		}
 		verses = append(verses, v)
@@ -104,8 +112,8 @@ func (r *mysqlAdminRepository) GetAllDailyVerses() ([]entity.DailyVerse, error) 
 }
 
 func (r *mysqlAdminRepository) CreateDailyVerse(v *entity.DailyVerse) error {
-	res, err := r.db.Exec("INSERT INTO daily_verses (reference, content, date) VALUES (?, ?, ?)", 
-		v.Reference, v.Content, v.Date)
+	res, err := r.db.Exec("INSERT INTO daily_verses (reference, content, devotional_title, devotional_url, date) VALUES (?, ?, ?, ?, ?)", 
+		v.Reference, v.Content, v.DevotionalTitle, v.DevotionalURL, v.Date)
 	if err != nil {
 		return err
 	}
@@ -114,8 +122,8 @@ func (r *mysqlAdminRepository) CreateDailyVerse(v *entity.DailyVerse) error {
 }
 
 func (r *mysqlAdminRepository) UpdateDailyVerse(v *entity.DailyVerse) error {
-	_, err := r.db.Exec("UPDATE daily_verses SET reference = ?, content = ?, date = ? WHERE id = ?", 
-		v.Reference, v.Content, v.Date, v.ID)
+	_, err := r.db.Exec("UPDATE daily_verses SET reference = ?, content = ?, devotional_title = ?, devotional_url = ?, date = ? WHERE id = ?", 
+		v.Reference, v.Content, v.DevotionalTitle, v.DevotionalURL, v.Date, v.ID)
 	return err
 }
 
@@ -195,18 +203,19 @@ func (r *mysqlAdminRepository) UpdateAnnouncement(a *entity.Announcement) error 
 		return err
 	}
 
-	// Update attachments: Simple approach is delete all and re-insert for this demo
-	// In production, you'd compare and only insert/delete needed ones
-	_, err = tx.Exec("DELETE FROM announcement_attachments WHERE announcement_id = ?", a.ID)
-	if err != nil {
-		return err
-	}
-
-	for _, att := range a.Attachments {
-		_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)", 
-			a.ID, att.FileName, att.FileURL)
+	// Update attachments: Replace only if new attachments are provided
+	if len(a.Attachments) > 0 {
+		_, err = tx.Exec("DELETE FROM announcement_attachments WHERE announcement_id = ?", a.ID)
 		if err != nil {
 			return err
+		}
+
+		for _, att := range a.Attachments {
+			_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)", 
+				a.ID, att.FileName, att.FileURL)
+			if err != nil {
+				return err
+			}
 		}
 	}
 
@@ -220,7 +229,7 @@ func (r *mysqlAdminRepository) DeleteAnnouncement(id int64) error {
 
 // Wartas
 func (r *mysqlAdminRepository) GetAllWartas() ([]entity.Warta, error) {
-	rows, err := r.db.Query("SELECT id, title, file_url, created_at, updated_at FROM wartas ORDER BY created_at DESC")
+	rows, err := r.db.Query("SELECT id, title, file_url, date, created_at, updated_at FROM wartas ORDER BY date DESC")
 	if err != nil {
 		return nil, err
 	}
@@ -229,7 +238,7 @@ func (r *mysqlAdminRepository) GetAllWartas() ([]entity.Warta, error) {
 	var wartas []entity.Warta
 	for rows.Next() {
 		var w entity.Warta
-		if err := rows.Scan(&w.ID, &w.Title, &w.FileURL, &w.CreatedAt, &w.UpdatedAt); err != nil {
+		if err := rows.Scan(&w.ID, &w.Title, &w.FileURL, &w.Date, &w.CreatedAt, &w.UpdatedAt); err != nil {
 			return nil, err
 		}
 		wartas = append(wartas, w)
@@ -237,9 +246,19 @@ func (r *mysqlAdminRepository) GetAllWartas() ([]entity.Warta, error) {
 	return wartas, nil
 }
 
+func (r *mysqlAdminRepository) GetWartaByID(id int64) (*entity.Warta, error) {
+	var w entity.Warta
+	err := r.db.QueryRow("SELECT id, title, file_url, date FROM wartas WHERE id = ?", id).
+		Scan(&w.ID, &w.Title, &w.FileURL, &w.Date)
+	if err != nil {
+		return nil, err
+	}
+	return &w, nil
+}
+
 func (r *mysqlAdminRepository) CreateWarta(w *entity.Warta) error {
-	res, err := r.db.Exec("INSERT INTO wartas (title, file_url) VALUES (?, ?)", 
-		w.Title, w.FileURL)
+	res, err := r.db.Exec("INSERT INTO wartas (title, file_url, date) VALUES (?, ?, ?)",
+		w.Title, w.FileURL, w.Date)
 	if err != nil {
 		return err
 	}
@@ -247,9 +266,37 @@ func (r *mysqlAdminRepository) CreateWarta(w *entity.Warta) error {
 	return nil
 }
 
+func (r *mysqlAdminRepository) UpdateWarta(w *entity.Warta) error {
+	_, err := r.db.Exec("UPDATE wartas SET title = ?, file_url = ?, date = ? WHERE id = ?",
+		w.Title, w.FileURL, w.Date, w.ID)
+	return err
+}
+
 func (r *mysqlAdminRepository) DeleteWarta(id int64) error {
 	_, err := r.db.Exec("DELETE FROM wartas WHERE id = ?", id)
 	return err
+}
+
+func (r *mysqlAdminRepository) GetAnnouncementAttachmentURLs(announcementID int64) ([]string, error) {
+	rows, err := r.db.Query("SELECT file_url FROM announcement_attachments WHERE announcement_id = ?", announcementID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var urls []string
+	for rows.Next() {
+		var url string
+		if err := rows.Scan(&url); err == nil {
+			urls = append(urls, url)
+		}
+	}
+	return urls, nil
+}
+
+func (r *mysqlAdminRepository) GetMinistryActivityImageURL(id int64) (string, error) {
+	var url string
+	err := r.db.QueryRow("SELECT image_url FROM ministry_activities WHERE id = ?", id).Scan(&url)
+	return url, err
 }
 
 // Ministry Activities

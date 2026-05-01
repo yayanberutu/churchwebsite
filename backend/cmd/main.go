@@ -2,6 +2,7 @@ package main
 
 import (
 	"database/sql"
+	"io"
 	"log"
 	"net/http"
 	"os"
@@ -9,12 +10,33 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
+	"github.com/joho/godotenv"
 	"github.com/yayanberutu/churchwebsite/backend/internal/handler"
+	"github.com/yayanberutu/churchwebsite/backend/internal/middleware"
 	"github.com/yayanberutu/churchwebsite/backend/internal/repository"
 	"github.com/yayanberutu/churchwebsite/backend/internal/service"
 )
 
 func main() {
+	// Setup log file
+	logFile, err := os.OpenFile("logs/app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
+	if err != nil {
+		log.Fatalf("Error opening log file: %v", err)
+	}
+	defer logFile.Close()
+
+	// Set log output to both console and file
+	multiWriter := io.MultiWriter(os.Stdout, logFile)
+	log.SetOutput(multiWriter)
+	
+	// Also set Gin to write to the same multiWriter
+	gin.DefaultWriter = multiWriter
+
+	// Load environment variables from .env file
+	if err := godotenv.Load(); err != nil {
+		log.Println("[WARNING] No .env file found or error reading it")
+	}
+
 	// Database connection
 	dsn := os.Getenv("DB_DSN")
 	if dsn == "" {
@@ -38,13 +60,23 @@ func main() {
 	pcSvc := service.NewPublicContentService(pcRepo)
 	pcHdl := handler.NewPublicContentHandler(pcSvc)
 
+	// Initialize Storage Service (Cloudflare R2)
+	// Reads R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL from env
+	storageSvc, storageErr := service.NewStorageService()
+	if storageErr != nil {
+		log.Printf("[WARNING] StorageService not initialized: %v. File uploads will use local mock URLs.", storageErr)
+		storageSvc = nil
+	}
+
 	// Initialize Admin layers
 	adminRepo := repository.NewAdminRepository(db)
-	adminSvc := service.NewAdminService(adminRepo)
-	adminHdl := handler.NewAdminHandler(adminSvc)
+	adminSvc := service.NewAdminService(adminRepo, storageSvc)
+	adminHdl := handler.NewAdminHandler(adminSvc, storageSvc)
 
 	// Setup router
-	r := gin.Default()
+	r := gin.New()
+	r.Use(middleware.Logger())
+	r.Use(gin.Recovery())
 
 	// CORS configuration
 	r.Use(cors.New(cors.Config{
@@ -69,7 +101,6 @@ func main() {
 			public.GET("/worship-schedules", pcHdl.GetWorshipSchedules)
 			public.GET("/daily-verses/today", pcHdl.GetDailyVerse)
 			public.GET("/upcoming-activities", pcHdl.GetUpcomingActivities)
-			public.GET("/daily-devotionals/today", pcHdl.GetDailyDevotional)
 		}
 
 		// Admin Routes
@@ -96,6 +127,7 @@ func main() {
 			// Warta
 			admin.GET("/wartas", adminHdl.GetAllWartas)
 			admin.POST("/wartas", adminHdl.CreateWarta)
+			admin.PUT("/wartas/:id", adminHdl.UpdateWarta)
 			admin.DELETE("/wartas/:id", adminHdl.DeleteWarta)
 
 			// Ministry Activities

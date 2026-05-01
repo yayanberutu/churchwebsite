@@ -15,7 +15,7 @@ func NewSiteConfigHandler(s service.SiteConfigService) *SiteConfigHandler {
 }
 
 func (h *SiteConfigHandler) GetSiteConfig(c *gin.Context) {
-	config, err := h.service.GetSiteConfig()
+	config, err := h.service.GetSiteConfig(c.Request.Context())
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"success": false,

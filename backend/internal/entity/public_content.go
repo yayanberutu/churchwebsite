@@ -6,6 +6,7 @@ type Warta struct {
 	ID        int64     `json:"id" db:"id"`
 	Title     string    `json:"title" db:"title"`
 	FileURL   string    `json:"file_url" db:"file_url"`
+	Date      time.Time `json:"date" db:"date"`
 	CreatedAt time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
 }
@@ -47,12 +48,14 @@ type WorshipSchedule struct {
 }
 
 type DailyVerse struct {
-	ID        int64     `json:"id" db:"id"`
-	Reference string    `json:"reference" db:"reference"`
-	Content   string    `json:"content" db:"content"`
-	Date      time.Time `json:"date" db:"date"`
-	CreatedAt time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt time.Time `json:"updated_at" db:"updated_at"`
+	ID              int64     `json:"id" db:"id"`
+	Reference       string    `json:"reference" db:"reference"`
+	Content         string    `json:"content" db:"content"`
+	DevotionalTitle string    `json:"devotional_title" db:"devotional_title"`
+	DevotionalURL   string    `json:"devotional_url" db:"devotional_url"`
+	Date            time.Time `json:"date" db:"date"`
+	CreatedAt       time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt       time.Time `json:"updated_at" db:"updated_at"`
 }
 
 type UpcomingActivity struct {
@@ -64,13 +67,3 @@ type UpcomingActivity struct {
 	CreatedAt  time.Time `json:"created_at" db:"created_at"`
 	UpdatedAt  time.Time `json:"updated_at" db:"updated_at"`
 }
-
-type DailyDevotional struct {
-	ID         int64     `json:"id" db:"id"`
-	Title      string    `json:"title" db:"title"`
-	YoutubeURL string    `json:"youtube_url" db:"youtube_url"`
-	Date       time.Time `json:"date" db:"date"`
-	CreatedAt  time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at" db:"updated_at"`
-}
-
