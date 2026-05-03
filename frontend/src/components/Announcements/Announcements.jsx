@@ -1,5 +1,5 @@
 // src/components/Announcements/Announcements.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchLatestAnnouncements } from '../../api/publicContentApi';
 
 const getBadgeClasses = (target) => {
@@ -34,7 +34,7 @@ const Announcements = () => {
         } else {
           setError(result.message);
         }
-      } catch (err) {
+      } catch {
         setError("Gagal memuat pengumuman");
       } finally {
         setLoading(false);

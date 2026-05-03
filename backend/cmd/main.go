@@ -19,6 +19,10 @@ import (
 
 func main() {
 	// Setup log file
+	if err := os.MkdirAll("logs", 0755); err != nil {
+		log.Fatalf("Error creating log directory: %v", err)
+	}
+
 	logFile, err := os.OpenFile("logs/app.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0666)
 	if err != nil {
 		log.Fatalf("Error opening log file: %v", err)
@@ -28,7 +32,7 @@ func main() {
 	// Set log output to both console and file
 	multiWriter := io.MultiWriter(os.Stdout, logFile)
 	log.SetOutput(multiWriter)
-	
+
 	// Also set Gin to write to the same multiWriter
 	gin.DefaultWriter = multiWriter
 
@@ -55,11 +59,6 @@ func main() {
 	svc := service.NewSiteConfigService(repo)
 	hdl := handler.NewSiteConfigHandler(svc)
 
-	// Initialize Public Content layers (Warta, Announcements, Activities)
-	pcRepo := repository.NewPublicContentRepository(db)
-	pcSvc := service.NewPublicContentService(pcRepo)
-	pcHdl := handler.NewPublicContentHandler(pcSvc)
-
 	// Initialize Storage Service (Cloudflare R2)
 	// Reads R2_ACCOUNT_ID, R2_ACCESS_KEY_ID, R2_SECRET_ACCESS_KEY, R2_BUCKET_NAME, R2_PUBLIC_URL from env
 	storageSvc, storageErr := service.NewStorageService()
@@ -67,6 +66,11 @@ func main() {
 		log.Printf("[WARNING] StorageService not initialized: %v. File uploads will use local mock URLs.", storageErr)
 		storageSvc = nil
 	}
+
+	// Initialize Public Content layers (Warta, Announcements, Activities)
+	pcRepo := repository.NewPublicContentRepository(db)
+	pcSvc := service.NewPublicContentService(pcRepo, storageSvc)
+	pcHdl := handler.NewPublicContentHandler(pcSvc)
 
 	// Initialize Admin layers
 	adminRepo := repository.NewAdminRepository(db)
@@ -93,7 +97,7 @@ func main() {
 		public := v1.Group("/public")
 		{
 			public.GET("/site-config", hdl.GetSiteConfig)
-			
+
 			// Public Content Routes
 			public.GET("/warta/latest/download", pcHdl.GetLatestWarta)
 			public.GET("/announcements/latest", pcHdl.GetLatestAnnouncements)
@@ -101,6 +105,7 @@ func main() {
 			public.GET("/worship-schedules", pcHdl.GetWorshipSchedules)
 			public.GET("/daily-verses/today", pcHdl.GetDailyVerse)
 			public.GET("/upcoming-activities", pcHdl.GetUpcomingActivities)
+			public.GET("/assets/*path", pcHdl.ProxyAsset)
 		}
 
 		// Admin Routes

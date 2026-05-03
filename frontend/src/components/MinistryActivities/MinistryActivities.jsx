@@ -1,5 +1,5 @@
 // src/components/MinistryActivities/MinistryActivities.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchLatestMinistryActivities } from '../../api/publicContentApi';
 
 const MinistryActivities = () => {
@@ -17,7 +17,7 @@ const MinistryActivities = () => {
         } else {
           setError(result.message);
         }
-      } catch (err) {
+      } catch {
         setError("Gagal memuat kegiatan pelayanan");
       } finally {
         setLoading(false);

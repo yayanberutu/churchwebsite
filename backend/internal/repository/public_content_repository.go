@@ -49,9 +49,38 @@ func (r *mysqlPublicContentRepository) GetLatestAnnouncements() ([]entity.Announ
 		if err := rows.Scan(&a.ID, &a.Title, &a.Content, &a.TargetAudience, &a.CreatedAt); err != nil {
 			return nil, err
 		}
+		attachments, err := r.getAnnouncementAttachments(a.ID)
+		if err != nil {
+			return nil, err
+		}
+		a.Attachments = attachments
 		announcements = append(announcements, a)
 	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
 	return announcements, nil
+}
+
+func (r *mysqlPublicContentRepository) getAnnouncementAttachments(announcementID int64) ([]entity.AnnouncementAttachment, error) {
+	rows, err := r.db.Query("SELECT id, announcement_id, file_name, file_url, created_at FROM announcement_attachments WHERE announcement_id = ?", announcementID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var attachments []entity.AnnouncementAttachment
+	for rows.Next() {
+		var attachment entity.AnnouncementAttachment
+		if err := rows.Scan(&attachment.ID, &attachment.AnnouncementID, &attachment.FileName, &attachment.FileURL, &attachment.CreatedAt); err != nil {
+			return nil, err
+		}
+		attachments = append(attachments, attachment)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return attachments, nil
 }
 
 func (r *mysqlPublicContentRepository) GetLatestMinistryActivities() ([]entity.MinistryActivity, error) {
@@ -121,5 +150,3 @@ func (r *mysqlPublicContentRepository) GetUpcomingActivities() ([]entity.Upcomin
 	}
 	return activities, nil
 }
-
-

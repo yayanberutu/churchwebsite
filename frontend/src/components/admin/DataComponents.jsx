@@ -1,7 +1,4 @@
-import React from 'react';
 import { X } from 'lucide-react';
-import { cn } from '../../utils/cn';
-import { Button } from './UI';
 
 export const Table = ({ headers, children }) => (
   <div className="w-full overflow-hidden border border-outline-variant/10 rounded-2xl bg-surface-container-lowest">

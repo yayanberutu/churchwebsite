@@ -2,6 +2,7 @@ package middleware
 
 import (
 	"bytes"
+	"context"
 	"io"
 	"log"
 	"time"
@@ -25,6 +26,7 @@ func Logger() gin.HandlerFunc {
 		traceID := uuid.New().String()
 		c.Set("trace_id", traceID)
 		c.Header("X-Trace-ID", traceID)
+		c.Request = c.Request.WithContext(context.WithValue(c.Request.Context(), "trace_id", traceID))
 
 		start := time.Now()
 

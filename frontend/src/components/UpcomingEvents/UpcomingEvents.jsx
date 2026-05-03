@@ -1,5 +1,5 @@
 // src/components/UpcomingEvents/UpcomingEvents.jsx
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { fetchUpcomingActivities } from '../../api/publicContentApi';
 
 const UpcomingEvents = () => {
