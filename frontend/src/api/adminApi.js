@@ -54,6 +54,13 @@ export const ministryActivityApi = {
   delete: (id) => api.delete(`/ministry-activities/${id}`),
 };
 
+export const upcomingActivityApi = {
+  getAll: () => api.get('/upcoming-activities'),
+  create: (data) => api.post('/upcoming-activities', data),
+  update: (id, data) => api.put(`/upcoming-activities/${id}`, data),
+  delete: (id) => api.delete(`/upcoming-activities/${id}`),
+};
+
 export const dashboardApi = {
   getStats: () => api.get('/stats'),
 };

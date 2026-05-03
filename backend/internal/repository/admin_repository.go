@@ -42,6 +42,12 @@ type AdminRepository interface {
 	CreateMinistryActivity(a *entity.MinistryActivity) error
 	UpdateMinistryActivity(a *entity.MinistryActivity) error
 	DeleteMinistryActivity(id int64) error
+
+	// Upcoming Activities
+	GetAllUpcomingActivities() ([]entity.UpcomingActivity, error)
+	CreateUpcomingActivity(a *entity.UpcomingActivity) error
+	UpdateUpcomingActivity(a *entity.UpcomingActivity) error
+	DeleteUpcomingActivity(id int64) error
 }
 
 type mysqlAdminRepository struct {
@@ -72,7 +78,7 @@ func (r *mysqlAdminRepository) GetAllWorshipSchedules() ([]entity.WorshipSchedul
 }
 
 func (r *mysqlAdminRepository) CreateWorshipSchedule(s *entity.WorshipSchedule) error {
-	res, err := r.db.Exec("INSERT INTO worship_schedules (name, schedule_time, location) VALUES (?, ?, ?)", 
+	res, err := r.db.Exec("INSERT INTO worship_schedules (name, schedule_time, location) VALUES (?, ?, ?)",
 		s.Name, s.ScheduleTime, s.Location)
 	if err != nil {
 		return err
@@ -82,7 +88,7 @@ func (r *mysqlAdminRepository) CreateWorshipSchedule(s *entity.WorshipSchedule) 
 }
 
 func (r *mysqlAdminRepository) UpdateWorshipSchedule(s *entity.WorshipSchedule) error {
-	_, err := r.db.Exec("UPDATE worship_schedules SET name = ?, schedule_time = ?, location = ? WHERE id = ?", 
+	_, err := r.db.Exec("UPDATE worship_schedules SET name = ?, schedule_time = ?, location = ? WHERE id = ?",
 		s.Name, s.ScheduleTime, s.Location, s.ID)
 	return err
 }
@@ -112,7 +118,7 @@ func (r *mysqlAdminRepository) GetAllDailyVerses() ([]entity.DailyVerse, error) 
 }
 
 func (r *mysqlAdminRepository) CreateDailyVerse(v *entity.DailyVerse) error {
-	res, err := r.db.Exec("INSERT INTO daily_verses (reference, content, devotional_title, devotional_url, date) VALUES (?, ?, ?, ?, ?)", 
+	res, err := r.db.Exec("INSERT INTO daily_verses (reference, content, devotional_title, devotional_url, date) VALUES (?, ?, ?, ?, ?)",
 		v.Reference, v.Content, v.DevotionalTitle, v.DevotionalURL, v.Date)
 	if err != nil {
 		return err
@@ -122,7 +128,7 @@ func (r *mysqlAdminRepository) CreateDailyVerse(v *entity.DailyVerse) error {
 }
 
 func (r *mysqlAdminRepository) UpdateDailyVerse(v *entity.DailyVerse) error {
-	_, err := r.db.Exec("UPDATE daily_verses SET reference = ?, content = ?, devotional_title = ?, devotional_url = ?, date = ? WHERE id = ?", 
+	_, err := r.db.Exec("UPDATE daily_verses SET reference = ?, content = ?, devotional_title = ?, devotional_url = ?, date = ? WHERE id = ?",
 		v.Reference, v.Content, v.DevotionalTitle, v.DevotionalURL, v.Date, v.ID)
 	return err
 }
@@ -171,7 +177,7 @@ func (r *mysqlAdminRepository) CreateAnnouncement(a *entity.Announcement) error 
 	}
 	defer tx.Rollback()
 
-	res, err := tx.Exec("INSERT INTO announcements (title, content, target_audience) VALUES (?, ?, ?)", 
+	res, err := tx.Exec("INSERT INTO announcements (title, content, target_audience) VALUES (?, ?, ?)",
 		a.Title, a.Content, a.TargetAudience)
 	if err != nil {
 		return err
@@ -180,7 +186,7 @@ func (r *mysqlAdminRepository) CreateAnnouncement(a *entity.Announcement) error 
 
 	// Insert attachments
 	for _, att := range a.Attachments {
-		_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)", 
+		_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)",
 			a.ID, att.FileName, att.FileURL)
 		if err != nil {
 			return err
@@ -197,7 +203,7 @@ func (r *mysqlAdminRepository) UpdateAnnouncement(a *entity.Announcement) error 
 	}
 	defer tx.Rollback()
 
-	_, err = tx.Exec("UPDATE announcements SET title = ?, content = ?, target_audience = ? WHERE id = ?", 
+	_, err = tx.Exec("UPDATE announcements SET title = ?, content = ?, target_audience = ? WHERE id = ?",
 		a.Title, a.Content, a.TargetAudience, a.ID)
 	if err != nil {
 		return err
@@ -211,7 +217,7 @@ func (r *mysqlAdminRepository) UpdateAnnouncement(a *entity.Announcement) error 
 		}
 
 		for _, att := range a.Attachments {
-			_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)", 
+			_, err := tx.Exec("INSERT INTO announcement_attachments (announcement_id, file_name, file_url) VALUES (?, ?, ?)",
 				a.ID, att.FileName, att.FileURL)
 			if err != nil {
 				return err
@@ -319,7 +325,7 @@ func (r *mysqlAdminRepository) GetAllMinistryActivities() ([]entity.MinistryActi
 }
 
 func (r *mysqlAdminRepository) CreateMinistryActivity(a *entity.MinistryActivity) error {
-	res, err := r.db.Exec("INSERT INTO ministry_activities (name, image_url, short_caption) VALUES (?, ?, ?)", 
+	res, err := r.db.Exec("INSERT INTO ministry_activities (name, image_url, short_caption) VALUES (?, ?, ?)",
 		a.Name, a.ImageURL, a.ShortCaption)
 	if err != nil {
 		return err
@@ -329,12 +335,55 @@ func (r *mysqlAdminRepository) CreateMinistryActivity(a *entity.MinistryActivity
 }
 
 func (r *mysqlAdminRepository) UpdateMinistryActivity(a *entity.MinistryActivity) error {
-	_, err := r.db.Exec("UPDATE ministry_activities SET name = ?, image_url = ?, short_caption = ? WHERE id = ?", 
+	_, err := r.db.Exec("UPDATE ministry_activities SET name = ?, image_url = ?, short_caption = ? WHERE id = ?",
 		a.Name, a.ImageURL, a.ShortCaption, a.ID)
 	return err
 }
 
 func (r *mysqlAdminRepository) DeleteMinistryActivity(id int64) error {
 	_, err := r.db.Exec("DELETE FROM ministry_activities WHERE id = ?", id)
+	return err
+}
+
+// Upcoming Activities
+func (r *mysqlAdminRepository) GetAllUpcomingActivities() ([]entity.UpcomingActivity, error) {
+	rows, err := r.db.Query("SELECT id, title, date, time_string, location, created_at, updated_at FROM upcoming_activities ORDER BY date ASC, id ASC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	var activities []entity.UpcomingActivity
+	for rows.Next() {
+		var a entity.UpcomingActivity
+		if err := rows.Scan(&a.ID, &a.Title, &a.Date, &a.TimeString, &a.Location, &a.CreatedAt, &a.UpdatedAt); err != nil {
+			return nil, err
+		}
+		activities = append(activities, a)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return activities, nil
+}
+
+func (r *mysqlAdminRepository) CreateUpcomingActivity(a *entity.UpcomingActivity) error {
+	res, err := r.db.Exec("INSERT INTO upcoming_activities (title, date, time_string, location) VALUES (?, ?, ?, ?)",
+		a.Title, a.Date, a.TimeString, a.Location)
+	if err != nil {
+		return err
+	}
+	a.ID, _ = res.LastInsertId()
+	return nil
+}
+
+func (r *mysqlAdminRepository) UpdateUpcomingActivity(a *entity.UpcomingActivity) error {
+	_, err := r.db.Exec("UPDATE upcoming_activities SET title = ?, date = ?, time_string = ?, location = ? WHERE id = ?",
+		a.Title, a.Date, a.TimeString, a.Location, a.ID)
+	return err
+}
+
+func (r *mysqlAdminRepository) DeleteUpcomingActivity(id int64) error {
+	_, err := r.db.Exec("DELETE FROM upcoming_activities WHERE id = ?", id)
 	return err
 }

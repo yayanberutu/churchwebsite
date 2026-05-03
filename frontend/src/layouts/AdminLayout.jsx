@@ -5,6 +5,7 @@ import {
   BookOpen, 
   FileText, 
   Bell, 
+  CalendarClock,
   LogOut,
   ChevronRight,
   Camera
@@ -18,6 +19,7 @@ const sidebarItems = [
   { name: 'Warta', icon: FileText, path: '/admin/wartas' },
   { name: 'Pengumuman', icon: Bell, path: '/admin/announcements' },
   { name: 'Kegiatan Pelayanan', icon: Camera, path: '/admin/activities' },
+  { name: 'Kegiatan Mendatang', icon: CalendarClock, path: '/admin/upcoming-activities' },
 ];
 
 const AdminLayout = () => {

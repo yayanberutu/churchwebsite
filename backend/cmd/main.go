@@ -140,6 +140,12 @@ func main() {
 			admin.POST("/ministry-activities", adminHdl.CreateMinistryActivity)
 			admin.PUT("/ministry-activities/:id", adminHdl.UpdateMinistryActivity)
 			admin.DELETE("/ministry-activities/:id", adminHdl.DeleteMinistryActivity)
+
+			// Upcoming Activities
+			admin.GET("/upcoming-activities", adminHdl.GetAllUpcomingActivities)
+			admin.POST("/upcoming-activities", adminHdl.CreateUpcomingActivity)
+			admin.PUT("/upcoming-activities/:id", adminHdl.UpdateUpcomingActivity)
+			admin.DELETE("/upcoming-activities/:id", adminHdl.DeleteUpcomingActivity)
 		}
 	}
 

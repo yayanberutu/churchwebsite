@@ -5,14 +5,14 @@
 - **Product:** Website Gereja (HKBP Kernolong)
 - **Sprint:** Sprint 5
 - **Type:** Product Requirements Document (AI-Ready)
-- **Focus:** Cloudflare R2 Integration, Comprehensive Logging, Schema Merging, and System Stabilization.
+- **Focus:** Cloudflare R2 Integration, Comprehensive Logging, Schema Merging, Upcoming Activities Management, and System Stabilization.
 - **Status:** COMPLETED (May 2026)
 
 ---
 
 ## 2. Product Overview
 
-Sprint 5 berfokus pada migrasi penyimpanan aset ke **Cloudflare R2**, implementasi sistem monitoring melalui **Comprehensive Logging**, penyederhanaan skema data untuk **Daily Verse & Devotional**, serta peningkatan stabilitas aplikasi melalui penanganan *error* yang lebih baik di sisi backend dan frontend.
+Sprint 5 berfokus pada migrasi penyimpanan aset ke **Cloudflare R2**, implementasi sistem monitoring melalui **Comprehensive Logging**, penyederhanaan skema data untuk **Daily Verse & Devotional**, penambahan manajemen **Kegiatan Mendatang** untuk admin, serta peningkatan stabilitas aplikasi melalui penanganan *error* yang lebih baik di sisi backend dan frontend.
 
 ---
 
@@ -24,12 +24,15 @@ Sprint 5 berfokus pada migrasi penyimpanan aset ke **Cloudflare R2**, implementa
 3. Sinkronisasi siklus hidup file (Upload/Replace/Delete) antara Database dan R2.
 4. Penyederhanaan manajemen konten harian (Merging Daily Verse & Devotional).
 5. Peningkatan kualitas UI/UX pada komponen konten harian di Home Page.
+6. Menyediakan CRUD admin untuk mengelola agenda Kegiatan Mendatang yang tampil di Home Page.
 
 ### Success Metrics
 - Upload file berhasil masuk ke bucket R2.
 - Log sistem mencatat setiap API call dengan Trace ID dan Time Cost.
 - Tidak ada file yatim (*orphan files*) di R2 setelah penghapusan/pembaruan data.
 - API publik tetap mengembalikan status sukses (200 OK) meskipun data tidak ditemukan (Graceful Null Handling).
+- Admin dapat membuat, mengubah, dan menghapus Kegiatan Mendatang tanpa akses database manual.
+- Perubahan Kegiatan Mendatang dari dashboard admin langsung tersinkron ke endpoint publik Home Page.
 
 ---
 
@@ -55,6 +58,12 @@ Sprint 5 berfokus pada migrasi penyimpanan aset ke **Cloudflare R2**, implementa
 - **Graceful Error Handling**: Backend menangani `sql.ErrNoRows` sebagai status sukses dengan `data: null` (mencegah 500 Internal Server Error saat data kosong).
 - **Frontend Null Safety**: Semua Admin Page menggunakan pola `data || []` saat melakukan *state assignment* untuk mencegah *crash* pada render.
 - **Bug Fix**: Perbaikan isu *z-index* pada pemilihan foto di form `Ministry Activities`.
+
+### 4.5 Upcoming Activities Management
+- **Admin CRUD API**: Backend menyediakan endpoint `GET/POST/PUT/DELETE /api/v1/admin/upcoming-activities` untuk tabel `upcoming_activities`.
+- **Validation**: Backend menerima payload JSON dengan `title`, `date`, `time_string`, dan `location`; format tanggal divalidasi sebagai `YYYY-MM-DD`.
+- **Admin UI**: Dashboard admin memiliki halaman **Kegiatan Mendatang** untuk melihat daftar agenda, menambah kegiatan, mengedit detail, dan menghapus kegiatan.
+- **Public Integration**: Data yang dikelola admin menggunakan tabel yang sama dengan endpoint publik `/api/v1/public/upcoming-activities`, sehingga Home Page menampilkan agenda terbaru tanpa sinkronisasi tambahan.
 
 ---
 
@@ -90,6 +99,7 @@ R2_PUBLIC_URL=...
 - [x] Penggabungan tabel Daily Verse & Devotional selesai beserta UI redesign-nya.
 - [x] Penanganan data `null` sudah aman di seluruh Dashboard Admin.
 - [x] Perbaikan bug pemilih foto di Admin Activities selesai.
+- [x] CRUD admin untuk Kegiatan Mendatang selesai dan terintegrasi dengan Home Page.
 
 ---
-*Last Updated: 2026-05-02*
+*Last Updated: 2026-05-03*

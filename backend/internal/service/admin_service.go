@@ -37,6 +37,12 @@ type AdminService interface {
 	CreateMinistryActivity(ctx context.Context, a *entity.MinistryActivity) error
 	UpdateMinistryActivity(ctx context.Context, id int64, a *entity.MinistryActivity) error
 	DeleteMinistryActivity(ctx context.Context, id int64) error
+
+	// Upcoming Activities
+	GetAllUpcomingActivities(ctx context.Context) ([]entity.UpcomingActivity, error)
+	CreateUpcomingActivity(ctx context.Context, a *entity.UpcomingActivity) error
+	UpdateUpcomingActivity(ctx context.Context, id int64, a *entity.UpcomingActivity) error
+	DeleteUpcomingActivity(ctx context.Context, id int64) error
 }
 
 type adminService struct {
@@ -172,4 +178,22 @@ func (s *adminService) DeleteMinistryActivity(ctx context.Context, id int64) err
 		}
 	}
 	return s.repo.DeleteMinistryActivity(id)
+}
+
+// Upcoming Activities
+func (s *adminService) GetAllUpcomingActivities(ctx context.Context) ([]entity.UpcomingActivity, error) {
+	return s.repo.GetAllUpcomingActivities()
+}
+
+func (s *adminService) CreateUpcomingActivity(ctx context.Context, a *entity.UpcomingActivity) error {
+	return s.repo.CreateUpcomingActivity(a)
+}
+
+func (s *adminService) UpdateUpcomingActivity(ctx context.Context, id int64, a *entity.UpcomingActivity) error {
+	a.ID = id
+	return s.repo.UpdateUpcomingActivity(a)
+}
+
+func (s *adminService) DeleteUpcomingActivity(ctx context.Context, id int64) error {
+	return s.repo.DeleteUpcomingActivity(id)
 }

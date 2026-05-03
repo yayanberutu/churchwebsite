@@ -425,3 +425,73 @@ func (h *AdminHandler) DeleteMinistryActivity(c *gin.Context) {
 	}
 	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Deleted successfully"})
 }
+
+// ==================== Upcoming Activities ====================
+func (h *AdminHandler) GetAllUpcomingActivities(c *gin.Context) {
+	activities, err := h.svc.GetAllUpcomingActivities(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": activities})
+}
+
+func (h *AdminHandler) CreateUpcomingActivity(c *gin.Context) {
+	activity, ok := bindUpcomingActivity(c)
+	if !ok {
+		return
+	}
+	if err := h.svc.CreateUpcomingActivity(c.Request.Context(), activity); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusCreated, gin.H{"success": true, "data": activity})
+}
+
+func (h *AdminHandler) UpdateUpcomingActivity(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	activity, ok := bindUpcomingActivity(c)
+	if !ok {
+		return
+	}
+	if err := h.svc.UpdateUpcomingActivity(c.Request.Context(), id, activity); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "data": activity})
+}
+
+func (h *AdminHandler) DeleteUpcomingActivity(c *gin.Context) {
+	id, _ := strconv.ParseInt(c.Param("id"), 10, 64)
+	if err := h.svc.DeleteUpcomingActivity(c.Request.Context(), id); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Deleted successfully"})
+}
+
+func bindUpcomingActivity(c *gin.Context) (*entity.UpcomingActivity, bool) {
+	var input struct {
+		Title      string `json:"title" binding:"required"`
+		Date       string `json:"date" binding:"required"`
+		TimeString string `json:"time_string" binding:"required"`
+		Location   string `json:"location" binding:"required"`
+	}
+	if err := c.ShouldBindJSON(&input); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": err.Error()})
+		return nil, false
+	}
+
+	date, err := time.Parse("2006-01-02", input.Date)
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Invalid date format, use YYYY-MM-DD"})
+		return nil, false
+	}
+
+	return &entity.UpcomingActivity{
+		Title:      input.Title,
+		Date:       date,
+		TimeString: input.TimeString,
+		Location:   input.Location,
+	}, true
+}

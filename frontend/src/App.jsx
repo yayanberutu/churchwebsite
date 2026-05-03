@@ -6,6 +6,7 @@ import DailyVersePage from './pages/admin/DailyVersePage';
 import WartaPage from './pages/admin/WartaPage';
 import AnnouncementsPage from './pages/admin/AnnouncementsPage';
 import MinistryActivitiesPage from './pages/admin/MinistryActivitiesPage';
+import UpcomingActivitiesPage from './pages/admin/UpcomingActivitiesPage';
 import HomePage from './pages/Home/HomePage';
 
 function App() {
@@ -23,6 +24,7 @@ function App() {
           <Route path="wartas" element={<WartaPage />} />
           <Route path="announcements" element={<AnnouncementsPage />} />
           <Route path="activities" element={<MinistryActivitiesPage />} />
+          <Route path="upcoming-activities" element={<UpcomingActivitiesPage />} />
         </Route>
 
         {/* Fallback */}
