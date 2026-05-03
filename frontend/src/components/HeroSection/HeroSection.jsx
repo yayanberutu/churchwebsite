@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { fetchLatestWarta, fetchWorshipSchedules } from '../../api/publicContentApi';
 
-const HeroSection = () => {
+const HeroSection = ({ hero }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(false);
@@ -28,7 +28,7 @@ const HeroSection = () => {
     <section className="relative min-h-[700px] flex items-center justify-center bg-surface-container-low overflow-hidden">
       <div className="absolute inset-0 z-0">
         <img
-          src="/images/hkbpkernolong.jpg"
+          src={hero?.imageUrl || "/images/hkbpkernolong.jpg"}
           alt="Church congregation"
           className="w-full h-full object-cover opacity-90"
         />
@@ -38,17 +38,17 @@ const HeroSection = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-8 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
         <div className="space-y-6">
           <h1 className="font-headline text-5xl md:text-7xl font-bold text-primary tracking-tight leading-tight">
-            Selamat Datang di HKBP Kernolong
+            {hero?.title || "Selamat Datang di HKBP Kernolong"}
           </h1>
           <p className="font-body text-lg text-on-surface-variant max-w-md leading-relaxed">
-            Membangun iman, harapan, dan kasih dalam persekutuan yang hidup. Bergabunglah bersama kami dalam perjalanan rohani yang mendalam.
+            {hero?.subtitle || "Membangun iman, harapan, dan kasih dalam persekutuan yang hidup."}
           </p>
           <div className="pt-4 flex flex-wrap gap-4">
             <button
               onClick={handleOpenSchedules}
               className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-3 rounded-md font-body font-semibold shadow-lg hover:shadow-xl transition-all"
             >
-              Jadwal Ibadah
+              {hero?.primaryButtonText || "Jadwal Ibadah"}
             </button>
             <button
               onClick={async () => {
@@ -61,7 +61,7 @@ const HeroSection = () => {
               }}
               className="bg-surface-container-highest text-on-primary-fixed-variant px-8 py-3 rounded-md font-body font-semibold hover:bg-surface-variant transition-colors flex items-center gap-2"
             >
-              Download Warta Minggu Ini
+              {hero?.secondaryButtonText || "Download Warta Minggu Ini"}
               <span className="material-symbols-outlined text-sm">download</span>
             </button>
           </div>

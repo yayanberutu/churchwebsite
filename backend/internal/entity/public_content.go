@@ -14,9 +14,10 @@ type Warta struct {
 type Announcement struct {
 	ID             int64                    `json:"id" db:"id"`
 	Title          string                   `json:"title" db:"title"`
-	Content        string                   `json:"content" db:"content"`
+	Content        string                   `json:"content,omitempty" db:"content"`
+	ContentPreview string                   `json:"content_preview,omitempty"`
 	TargetAudience string                   `json:"target_audience" db:"target_audience"`
-	Attachments    []AnnouncementAttachment `json:"attachments"`
+	Attachments    []AnnouncementAttachment `json:"attachments,omitempty"`
 	CreatedAt      time.Time                `json:"created_at" db:"created_at"`
 	UpdatedAt      time.Time                `json:"updated_at" db:"updated_at"`
 }
@@ -30,12 +31,14 @@ type AnnouncementAttachment struct {
 }
 
 type MinistryActivity struct {
-	ID           int64     `json:"id" db:"id"`
-	Name         string    `json:"name" db:"name"`
-	ImageURL     string    `json:"image_url" db:"image_url"`
-	ShortCaption string    `json:"short_caption" db:"short_caption"`
-	CreatedAt    time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at" db:"updated_at"`
+	ID           int64      `json:"id" db:"id"`
+	Name         string     `json:"name" db:"name"`
+	ImageURL     string     `json:"image_url" db:"image_url"`
+	ShortCaption string     `json:"short_caption" db:"short_caption"`
+	Content      string     `json:"content,omitempty" db:"content"`
+	ActivityDate *time.Time `json:"activity_date,omitempty" db:"activity_date"`
+	CreatedAt    time.Time  `json:"created_at" db:"created_at"`
+	UpdatedAt    time.Time  `json:"updated_at" db:"updated_at"`
 }
 
 type WorshipSchedule struct {
@@ -59,11 +62,34 @@ type DailyVerse struct {
 }
 
 type UpcomingActivity struct {
-	ID         int64     `json:"id" db:"id"`
-	Title      string    `json:"title" db:"title"`
-	Date       time.Time `json:"date" db:"date"`
-	TimeString string    `json:"time_string" db:"time_string"`
-	Location   string    `json:"location" db:"location"`
-	CreatedAt  time.Time `json:"created_at" db:"created_at"`
-	UpdatedAt  time.Time `json:"updated_at" db:"updated_at"`
+	ID                int64     `json:"id" db:"id"`
+	Title             string    `json:"title" db:"title"`
+	Date              time.Time `json:"date" db:"date"`
+	TimeString        string    `json:"time_string" db:"time_string"`
+	Location          string    `json:"location" db:"location"`
+	DaysUntil         int       `json:"days_until"`
+	RelativeDateLabel string    `json:"relative_date_label"`
+	IsPast            bool      `json:"is_past"`
+	StatusLabel       string    `json:"status_label,omitempty"`
+	CreatedAt         time.Time `json:"created_at" db:"created_at"`
+	UpdatedAt         time.Time `json:"updated_at" db:"updated_at"`
+}
+
+type Pagination struct {
+	Page        int  `json:"page"`
+	PageSize    int  `json:"page_size"`
+	TotalItems  int  `json:"total_items"`
+	TotalPages  int  `json:"total_pages"`
+	HasNext     bool `json:"has_next"`
+	HasPrevious bool `json:"has_previous"`
+}
+
+type PaginatedAnnouncements struct {
+	Items      []Announcement `json:"items"`
+	Pagination Pagination     `json:"pagination"`
+}
+
+type PaginatedMinistryActivities struct {
+	Items      []MinistryActivity `json:"items"`
+	Pagination Pagination         `json:"pagination"`
 }

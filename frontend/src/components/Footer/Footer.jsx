@@ -12,13 +12,9 @@ const Footer = ({ churchName }) => {
             © 2024 {churchName || "HKBP Kernolong"}. The Reverent Echo: Bridging Tradition and Clarity.
           </p>
         </div>
-        <div className="flex flex-col md:items-end gap-4">
-          <div className="flex gap-6 flex-wrap md:justify-end">
-            <a href="#" className="text-on-surface-variant font-body text-sm hover:text-primary underline decoration-primary/30 transition-all">Privacy Policy</a>
-            <a href="#" className="text-on-surface-variant font-body text-sm hover:text-primary underline decoration-primary/30 transition-all">Church Locations</a>
-            <a href="#" className="text-on-surface-variant font-body text-sm hover:text-primary underline decoration-primary/30 transition-all">Ministries</a>
-            <a href="#" className="text-on-surface-variant font-body text-sm hover:text-primary underline decoration-primary/30 transition-all">Archive</a>
-          </div>
+        <div className="flex flex-col md:items-end gap-2 text-sm text-on-surface-variant">
+          <p>Jl. Kramat IV, Jakarta Pusat</p>
+          <p>Melayani dalam iman, harapan, dan kasih.</p>
         </div>
       </div>
     </footer>

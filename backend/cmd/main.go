@@ -101,10 +101,16 @@ func main() {
 			// Public Content Routes
 			public.GET("/warta/latest/download", pcHdl.GetLatestWarta)
 			public.GET("/announcements/latest", pcHdl.GetLatestAnnouncements)
+			public.GET("/announcements", pcHdl.GetAnnouncements)
+			public.GET("/announcements/:id", pcHdl.GetAnnouncementDetail)
 			public.GET("/ministry-activities/latest", pcHdl.GetLatestMinistryActivities)
+			public.GET("/ministry-activities", pcHdl.GetMinistryActivities)
+			public.GET("/ministry-activities/:id", pcHdl.GetMinistryActivityDetail)
 			public.GET("/worship-schedules", pcHdl.GetWorshipSchedules)
 			public.GET("/daily-verses/today", pcHdl.GetDailyVerse)
 			public.GET("/upcoming-activities", pcHdl.GetUpcomingActivities)
+			public.GET("/calendar/activities", pcHdl.GetCalendarActivitiesByDate)
+			public.GET("/calendar/activity-dates", pcHdl.GetCalendarActivityDates)
 			public.GET("/assets/*path", pcHdl.ProxyAsset)
 		}
 
@@ -146,6 +152,10 @@ func main() {
 			admin.POST("/upcoming-activities", adminHdl.CreateUpcomingActivity)
 			admin.PUT("/upcoming-activities/:id", adminHdl.UpdateUpcomingActivity)
 			admin.DELETE("/upcoming-activities/:id", adminHdl.DeleteUpcomingActivity)
+
+			// Church Config
+			admin.GET("/church-config", adminHdl.GetChurchConfig)
+			admin.PUT("/church-config", adminHdl.UpdateChurchConfig)
 		}
 	}
 

@@ -7,6 +7,11 @@ import WartaPage from './pages/admin/WartaPage';
 import AnnouncementsPage from './pages/admin/AnnouncementsPage';
 import MinistryActivitiesPage from './pages/admin/MinistryActivitiesPage';
 import UpcomingActivitiesPage from './pages/admin/UpcomingActivitiesPage';
+import ChurchConfigPage from './pages/admin/ChurchConfigPage';
+import AnnouncementListPage from './pages/Announcements/AnnouncementListPage';
+import AnnouncementDetailPage from './pages/Announcements/AnnouncementDetailPage';
+import MinistryActivityFeedPage from './pages/MinistryActivities/MinistryActivityFeedPage';
+import MinistryActivityDetailPage from './pages/MinistryActivities/MinistryActivityDetailPage';
 import HomePage from './pages/Home/HomePage';
 
 function App() {
@@ -15,6 +20,10 @@ function App() {
       <Routes>
         {/* Public Routes */}
         <Route path="/" element={<HomePage />} />
+        <Route path="/pengumuman" element={<AnnouncementListPage />} />
+        <Route path="/pengumuman/:id" element={<AnnouncementDetailPage />} />
+        <Route path="/kegiatan-pelayanan" element={<MinistryActivityFeedPage />} />
+        <Route path="/kegiatan-pelayanan/:id" element={<MinistryActivityDetailPage />} />
 
         {/* Admin Routes */}
         <Route path="/admin" element={<AdminLayout />}>
@@ -25,6 +34,7 @@ function App() {
           <Route path="announcements" element={<AnnouncementsPage />} />
           <Route path="activities" element={<MinistryActivitiesPage />} />
           <Route path="upcoming-activities" element={<UpcomingActivitiesPage />} />
+          <Route path="church-config" element={<ChurchConfigPage />} />
         </Route>
 
         {/* Fallback */}

@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
@@ -494,4 +495,119 @@ func bindUpcomingActivity(c *gin.Context) (*entity.UpcomingActivity, bool) {
 		TimeString: input.TimeString,
 		Location:   input.Location,
 	}, true
+}
+
+// ==================== Church Config ====================
+func (h *AdminHandler) GetChurchConfig(c *gin.Context) {
+	configs, err := h.svc.GetChurchConfig(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error(), "data": nil})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Church config fetched successfully", "data": formatChurchConfigResponse(configs)})
+}
+
+func (h *AdminHandler) UpdateChurchConfig(c *gin.Context) {
+	churchName := strings.TrimSpace(c.PostForm("church_name"))
+	heroTitle := strings.TrimSpace(c.PostForm("home_hero_title"))
+	heroSubtitle := strings.TrimSpace(c.PostForm("home_hero_subtitle"))
+
+	if churchName == "" || heroTitle == "" || heroSubtitle == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "church_name, home_hero_title, and home_hero_subtitle are required"})
+		return
+	}
+	if len(churchName) > 255 || len(heroTitle) > 255 || len(heroSubtitle) > 1000 {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": "Input exceeds maximum length"})
+		return
+	}
+
+	if err := h.svc.UpdateChurchConfigValue(c.Request.Context(), "church_name", churchName); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	if err := h.svc.UpdateChurchConfigValue(c.Request.Context(), "home_hero_title", heroTitle); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	if err := h.svc.UpdateChurchConfigValue(c.Request.Context(), "home_hero_subtitle", heroSubtitle); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+
+	if ok := h.handleConfigImageUpload(c, "church_logo"); !ok {
+		return
+	}
+	if ok := h.handleConfigImageUpload(c, "home_hero_image"); !ok {
+		return
+	}
+
+	configs, err := h.svc.GetChurchConfig(c.Request.Context())
+	if err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return
+	}
+	c.JSON(http.StatusOK, gin.H{"success": true, "message": "Church config updated successfully", "data": formatChurchConfigResponse(configs)})
+}
+
+func (h *AdminHandler) handleConfigImageUpload(c *gin.Context, key string) bool {
+	file, err := c.FormFile(key)
+	if err != nil || file == nil {
+		return true
+	}
+	if file.Size > 5*1024*1024 {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": key + " maksimal 5MB"})
+		return false
+	}
+	contentType := file.Header.Get("Content-Type")
+	if contentType != "image/jpeg" && contentType != "image/png" && contentType != "image/webp" {
+		c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": key + " harus berupa JPEG, PNG, atau WebP"})
+		return false
+	}
+
+	fileURL := "/uploads/configs/" + file.Filename
+	if h.storage != nil {
+		openedFile, ferr := file.Open()
+		if ferr != nil {
+			c.JSON(http.StatusBadRequest, gin.H{"success": false, "message": ferr.Error()})
+			return false
+		}
+		url, uerr := h.storage.UploadFile(c.Request.Context(), openedFile, file, "configs")
+		openedFile.Close()
+		if uerr != nil {
+			c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": uerr.Error()})
+			return false
+		}
+		fileURL = url
+	}
+
+	if err := h.svc.UpdateChurchConfigFile(c.Request.Context(), key, file.Filename, fileURL); err != nil {
+		c.JSON(http.StatusInternalServerError, gin.H{"success": false, "message": err.Error()})
+		return false
+	}
+	return true
+}
+
+func formatChurchConfigResponse(configs map[string]entity.ChurchConfig) gin.H {
+	fileValue := func(key string) gin.H {
+		cfg := configs[key]
+		url := cfg.FileURL
+		if url == "" {
+			url = cfg.ConfigValue
+		}
+		return gin.H{"file_url": url, "file_name": cfg.FileName}
+	}
+	textValue := func(key string) string {
+		return configs[key].ConfigValue
+	}
+	return gin.H{
+		"identity": gin.H{
+			"church_name": textValue("church_name"),
+			"church_logo": fileValue("church_logo"),
+		},
+		"home_hero": gin.H{
+			"home_hero_title":    textValue("home_hero_title"),
+			"home_hero_subtitle": textValue("home_hero_subtitle"),
+			"home_hero_image":    fileValue("home_hero_image"),
+		},
+	}
 }

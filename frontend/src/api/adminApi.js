@@ -65,4 +65,11 @@ export const dashboardApi = {
   getStats: () => api.get('/stats'),
 };
 
+export const churchConfigApi = {
+  get: () => api.get('/church-config'),
+  update: (formData) => api.put('/church-config', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
+};
+
 export default api;

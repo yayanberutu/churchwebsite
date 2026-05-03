@@ -72,7 +72,7 @@ const HomePage = () => {
         menus={config?.menus} 
       />
       <main className="flex-grow">
-        <HeroSection />
+        <HeroSection hero={config?.homeHero} />
         <DailyVerse />
         <UpcomingEvents />
         <Announcements />

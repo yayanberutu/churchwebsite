@@ -32,9 +32,6 @@ const Header = ({ churchName, churchLogoUrl, menus }) => {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="text-primary hover:text-secondary transition-colors">
-            <span className="material-symbols-outlined text-2xl">search</span>
-          </button>
           <button className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-6 py-2 rounded-md font-body text-sm font-semibold shadow-sm hover:opacity-90 transition-opacity">
             Contact Us
           </button>

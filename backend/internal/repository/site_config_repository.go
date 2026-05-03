@@ -6,7 +6,7 @@ import (
 )
 
 type SiteConfigRepository interface {
-	GetChurch() (*entity.Church, error)
+	GetPublicConfig() (map[string]entity.ChurchConfig, error)
 	GetActiveMenus() ([]entity.Menu, error)
 }
 
@@ -18,13 +18,25 @@ func NewSiteConfigRepository(db *sql.DB) SiteConfigRepository {
 	return &mysqlSiteConfigRepository{db: db}
 }
 
-func (r *mysqlSiteConfigRepository) GetChurch() (*entity.Church, error) {
-	var church entity.Church
-	err := r.db.QueryRow("SELECT id, name, logo_url FROM churches LIMIT 1").Scan(&church.ID, &church.Name, &church.LogoURL)
+func (r *mysqlSiteConfigRepository) GetPublicConfig() (map[string]entity.ChurchConfig, error) {
+	rows, err := r.db.Query("SELECT id, config_key, COALESCE(config_value, ''), value_type, group_name, COALESCE(file_name, ''), COALESCE(file_url, '') FROM church_config WHERE is_public = true")
 	if err != nil {
 		return nil, err
 	}
-	return &church, nil
+	defer rows.Close()
+
+	configs := make(map[string]entity.ChurchConfig)
+	for rows.Next() {
+		var cfg entity.ChurchConfig
+		if err := rows.Scan(&cfg.ID, &cfg.ConfigKey, &cfg.ConfigValue, &cfg.ValueType, &cfg.GroupName, &cfg.FileName, &cfg.FileURL); err != nil {
+			return nil, err
+		}
+		configs[cfg.ConfigKey] = cfg
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return configs, nil
 }
 
 func (r *mysqlSiteConfigRepository) GetActiveMenus() ([]entity.Menu, error) {

@@ -48,6 +48,12 @@ type AdminRepository interface {
 	CreateUpcomingActivity(a *entity.UpcomingActivity) error
 	UpdateUpcomingActivity(a *entity.UpcomingActivity) error
 	DeleteUpcomingActivity(id int64) error
+
+	// Church Config
+	GetChurchConfig() (map[string]entity.ChurchConfig, error)
+	GetChurchConfigByKey(key string) (*entity.ChurchConfig, error)
+	UpsertChurchConfigValue(key, value string) error
+	UpsertChurchConfigFile(key, fileName, fileURL string) error
 }
 
 type mysqlAdminRepository struct {
@@ -385,5 +391,59 @@ func (r *mysqlAdminRepository) UpdateUpcomingActivity(a *entity.UpcomingActivity
 
 func (r *mysqlAdminRepository) DeleteUpcomingActivity(id int64) error {
 	_, err := r.db.Exec("DELETE FROM upcoming_activities WHERE id = ?", id)
+	return err
+}
+
+// Church Config
+func (r *mysqlAdminRepository) GetChurchConfig() (map[string]entity.ChurchConfig, error) {
+	rows, err := r.db.Query("SELECT id, config_key, COALESCE(config_value, ''), value_type, group_name, COALESCE(file_name, ''), COALESCE(file_url, '') FROM church_config ORDER BY group_name ASC, sort_order ASC")
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+
+	configs := make(map[string]entity.ChurchConfig)
+	for rows.Next() {
+		var cfg entity.ChurchConfig
+		if err := rows.Scan(&cfg.ID, &cfg.ConfigKey, &cfg.ConfigValue, &cfg.ValueType, &cfg.GroupName, &cfg.FileName, &cfg.FileURL); err != nil {
+			return nil, err
+		}
+		configs[cfg.ConfigKey] = cfg
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return configs, nil
+}
+
+func (r *mysqlAdminRepository) GetChurchConfigByKey(key string) (*entity.ChurchConfig, error) {
+	var cfg entity.ChurchConfig
+	err := r.db.QueryRow("SELECT id, config_key, COALESCE(config_value, ''), value_type, group_name, COALESCE(file_name, ''), COALESCE(file_url, '') FROM church_config WHERE config_key = ?", key).Scan(
+		&cfg.ID, &cfg.ConfigKey, &cfg.ConfigValue, &cfg.ValueType, &cfg.GroupName, &cfg.FileName, &cfg.FileURL,
+	)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		return nil, err
+	}
+	return &cfg, nil
+}
+
+func (r *mysqlAdminRepository) UpsertChurchConfigValue(key, value string) error {
+	_, err := r.db.Exec(`
+		INSERT INTO church_config (config_key, config_value, value_type, group_name, display_label, is_public)
+		VALUES (?, ?, 'text', 'general', ?, true)
+		ON DUPLICATE KEY UPDATE config_value = VALUES(config_value)
+	`, key, value, key)
+	return err
+}
+
+func (r *mysqlAdminRepository) UpsertChurchConfigFile(key, fileName, fileURL string) error {
+	_, err := r.db.Exec(`
+		INSERT INTO church_config (config_key, config_value, value_type, group_name, display_label, is_public, file_name, file_url)
+		VALUES (?, ?, 'image', 'general', ?, true, ?, ?)
+		ON DUPLICATE KEY UPDATE config_value = VALUES(config_value), file_name = VALUES(file_name), file_url = VALUES(file_url)
+	`, key, fileURL, key, fileName, fileURL)
 	return err
 }
