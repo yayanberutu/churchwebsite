@@ -5,7 +5,7 @@
 - **Product:** Website Gereja HKBP Kernolong
 - **Sprint:** Sprint 6
 - **Document Type:** Product Requirements Document (PRD) — AI Ready
-- **Status:** Draft for Implementation
+- **Status:** COMPLETED (May 2026)
 - **Primary Focus:**
   1. Perbaikan UX Kegiatan Mendatang dan tampilan kalender interaktif.
   2. Halaman list dan detail Pengumuman.
@@ -20,6 +20,74 @@
   - AI Frontend Agent
   - AI Backend Agent
   - AI UI Designer Agent
+
+---
+
+## Implementation Summary — Completed 2026-05-03
+
+Sprint 6 sudah diimplementasikan dan diverifikasi dengan fokus pada calendar experience, content detail pages, configurable Home, serta refinement menyeluruh pada halaman Home.
+
+### Completed Product Scope
+
+- **Kegiatan Mendatang**
+  - Home Page hanya menampilkan kegiatan hari ini dan masa depan dari endpoint publik.
+  - Label waktu relatif tersedia untuk kegiatan, seperti `Hari ini`, `Besok`, dan `{X} hari lagi`.
+  - Calendar modal tersedia melalui tombol **Lihat Semua Kalender**.
+  - Calendar modal mendukung marker tanggal, navigasi bulan, pilihan tanggal, loading state, empty state, dan error state.
+  - Bug timezone/date offset pada pemilihan tanggal kalender sudah diperbaiki dengan local date key sehingga tanggal yang dipilih tidak bergeser ke H-1.
+
+- **Pengumuman**
+  - Home Page menampilkan pengumuman terbaru dari API.
+  - Setiap card Home memiliki CTA eksplisit **Lihat Detail** dan seluruh card clickable ke detail.
+  - Halaman list dan detail pengumuman tersedia.
+  - Konten panjang ditampilkan sebagai preview di list/Home.
+  - Loading, empty, dan error state tersedia agar section tidak crash ketika API kosong atau gagal.
+
+- **Kegiatan Pelayanan Gereja**
+  - Home Page menampilkan dokumentasi kegiatan pelayanan dari API.
+  - Setiap card Home memiliki CTA eksplisit **Lihat Detail** dan seluruh card clickable ke detail.
+  - Tombol **Lihat Dokumentasi** mengarah ke halaman dokumentasi.
+  - Halaman feed/list dan detail kegiatan pelayanan tersedia.
+  - Field detail tambahan `content` dan `activity_date` tersedia untuk konten yang lebih lengkap.
+  - Loading, empty, error, dan null safety diterapkan.
+
+- **Configurable Home**
+  - Tabel `church_config` tersedia sebagai sumber konfigurasi identitas gereja dan Hero Home.
+  - Data dari tabel `churches` dimigrasikan ke `church_config`, lalu tabel `churches` dihapus.
+  - Endpoint public `site-config` membaca dari `church_config`.
+  - Admin dapat mengelola nama gereja, logo, judul Hero, subjudul Hero, dan gambar Hero.
+  - Upload gambar konfigurasi menggunakan storage service existing dan menjaga lifecycle file lama.
+
+- **Header, Footer, dan Home UI Refinement**
+  - Search icon/header search yang belum berfungsi sudah dihapus.
+  - Footer links yang belum dipakai sudah dihapus: Privacy Policy, Church Locations, Ministries, Archive.
+  - Seluruh section Home sudah direfine agar lebih clean, formal, age-friendly, dan konsisten:
+    - Header / Navbar
+    - Hero section
+    - Ayat Harian
+    - Renungan Harian / Video Renungan
+    - Kegiatan Mendatang
+    - Pengumuman
+    - Kegiatan Pelayanan Gereja
+    - Footer
+  - Container width, section spacing, typography hierarchy, card styling, CTA, hover state, focus state, dan responsive behavior diselaraskan.
+  - Video Renungan menjaga aspect ratio 16:9 dan memiliki fallback aman jika URL kosong/null.
+  - Card yang clickable diberi affordance visual melalui hover lift, shadow, cursor pointer, focus-visible outline, dan CTA eksplisit.
+
+- **Seeder Realistic Content**
+  - Migration `008_seed_realistic_content.sql` ditambahkan untuk mensimulasikan real case.
+  - Seeder mencakup:
+    - Kegiatan Mendatang
+    - Pengumuman
+    - Kegiatan Pelayanan Gereja
+  - Variasi konten mencakup data pendek, sedang, dan panjang untuk membantu validasi layout Home, list, detail, preview, dan line clamp.
+  - Seeder sudah dieksekusi pada database lokal pengembangan.
+
+### Verification
+
+- Frontend lint berhasil: `npm run lint`
+- Frontend production build berhasil: `npm run build`
+- Backend test berhasil: `go test ./...`
 
 ---
 

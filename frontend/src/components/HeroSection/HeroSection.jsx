@@ -2,7 +2,7 @@
 import { useState } from 'react';
 import { fetchLatestWarta, fetchWorshipSchedules } from '../../api/publicContentApi';
 
-const HeroSection = ({ hero }) => {
+const HeroSection = ({ hero, churchName }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [schedules, setSchedules] = useState([]);
   const [loadingSchedules, setLoadingSchedules] = useState(false);
@@ -25,28 +25,31 @@ const HeroSection = ({ hero }) => {
   };
 
   return (
-    <section className="relative min-h-[700px] flex items-center justify-center bg-surface-container-low overflow-hidden">
+    <section className="relative flex min-h-[560px] items-center justify-center overflow-hidden bg-surface-container-low md:min-h-[620px]">
       <div className="absolute inset-0 z-0">
         <img
           src={hero?.imageUrl || "/images/hkbpkernolong.jpg"}
           alt="Church congregation"
-          className="w-full h-full object-cover opacity-90"
+          className="h-full w-full object-cover opacity-90"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-background/50 to-transparent"></div>
+        <div className="absolute inset-0 bg-gradient-to-r from-background/95 via-background/70 to-background/25"></div>
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto px-8 w-full grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-        <div className="space-y-6">
-          <h1 className="font-headline text-5xl md:text-7xl font-bold text-primary tracking-tight leading-tight">
+      <div className="relative z-10 mx-auto grid w-full max-w-6xl grid-cols-1 items-center gap-10 px-5 py-20 md:grid-cols-[0.62fr_0.38fr] md:px-8">
+        <div className="max-w-3xl space-y-5">
+          <p className="inline-flex rounded-full bg-primary/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.18em] text-primary">
+            {churchName || "HKBP Kernolong"}
+          </p>
+          <h1 className="font-headline text-4xl font-bold leading-[1.08] tracking-tight text-primary sm:text-5xl md:text-6xl">
             {hero?.title || "Selamat Datang di HKBP Kernolong"}
           </h1>
-          <p className="font-body text-lg text-on-surface-variant max-w-md leading-relaxed">
+          <p className="max-w-xl font-body text-base leading-8 text-on-surface-variant md:text-lg">
             {hero?.subtitle || "Membangun iman, harapan, dan kasih dalam persekutuan yang hidup."}
           </p>
-          <div className="pt-4 flex flex-wrap gap-4">
+          <div className="flex flex-wrap gap-3 pt-3">
             <button
               onClick={handleOpenSchedules}
-              className="bg-gradient-to-br from-primary to-primary-container text-on-primary px-8 py-3 rounded-md font-body font-semibold shadow-lg hover:shadow-xl transition-all"
+              className="cursor-pointer rounded-lg bg-primary px-6 py-3 font-body text-sm font-bold text-on-primary shadow-lg shadow-primary/15 transition-all hover:-translate-y-0.5 hover:shadow-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               {hero?.primaryButtonText || "Jadwal Ibadah"}
             </button>
@@ -59,7 +62,7 @@ const HeroSection = ({ hero }) => {
                   alert('Warta minggu ini belum tersedia.');
                 }
               }}
-              className="bg-surface-container-highest text-on-primary-fixed-variant px-8 py-3 rounded-md font-body font-semibold hover:bg-surface-variant transition-colors flex items-center gap-2"
+              className="flex cursor-pointer items-center gap-2 rounded-lg bg-surface-container-highest px-6 py-3 font-body text-sm font-bold text-on-primary-fixed-variant shadow-sm transition-all hover:-translate-y-0.5 hover:bg-surface-variant hover:shadow-md focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary"
             >
               {hero?.secondaryButtonText || "Download Warta Minggu Ini"}
               <span className="material-symbols-outlined text-sm">download</span>
@@ -76,12 +79,12 @@ const HeroSection = ({ hero }) => {
             onClick={() => setIsModalOpen(false)}
           ></div>
           
-          <div className="relative bg-surface-container-lowest w-full max-w-2xl rounded-2xl shadow-2xl overflow-hidden animate-in fade-in zoom-in duration-300">
-            <div className="flex justify-between items-center p-6 border-b border-outline-variant">
+          <div className="relative w-full max-w-2xl overflow-hidden rounded-2xl bg-surface-container-lowest shadow-2xl animate-in fade-in zoom-in duration-300">
+            <div className="flex items-center justify-between border-b border-outline-variant p-6">
               <h2 className="font-headline text-2xl font-bold text-primary">Jadwal Ibadah</h2>
               <button 
                 onClick={() => setIsModalOpen(false)}
-                className="w-10 h-10 flex items-center justify-center rounded-full hover:bg-surface-container-high transition-colors text-on-surface-variant"
+                className="flex h-10 w-10 items-center justify-center rounded-full text-on-surface-variant transition-colors hover:bg-surface-container-high focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary"
               >
                 <span className="material-symbols-outlined">close</span>
               </button>
