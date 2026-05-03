@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { Upload, FileText, Trash2, Download, Edit2 } from 'lucide-react';
 import { Button, Input, Card } from '../../components/admin/UI';
 import { Table, Modal } from '../../components/admin/DataComponents';

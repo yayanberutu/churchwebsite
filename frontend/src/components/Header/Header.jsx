@@ -1,5 +1,4 @@
 // src/components/Header/Header.jsx
-import React from 'react';
 
 const Header = ({ churchName, churchLogoUrl, menus }) => {
   return (

@@ -1,5 +1,5 @@
 // src/components/HeroSection/HeroSection.jsx
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { fetchLatestWarta, fetchWorshipSchedules } from '../../api/publicContentApi';
 
 const HeroSection = () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link, useLocation, Outlet } from 'react-router-dom';
 import { 
   LayoutDashboard, 
@@ -6,7 +5,6 @@ import {
   BookOpen, 
   FileText, 
   Bell, 
-  Menu as MenuIcon, 
   LogOut,
   ChevronRight,
   Camera

@@ -1,5 +1,4 @@
 // src/components/Footer/Footer.jsx
-import React from 'react';
 
 const Footer = ({ churchName }) => {
   return (

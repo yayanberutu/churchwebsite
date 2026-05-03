@@ -3,7 +3,9 @@ package service
 import (
 	"context"
 	"fmt"
+	"io"
 	"log"
+	"mime"
 	"mime/multipart"
 	"os"
 	"path/filepath"
@@ -21,12 +23,16 @@ import (
 type StorageService interface {
 	UploadFile(ctx context.Context, file multipart.File, header *multipart.FileHeader, folder string) (string, error)
 	DeleteFile(ctx context.Context, fileURL string) error
+	GetFile(ctx context.Context, key string) (io.ReadCloser, string, error)
+	GetPublicURL(key string) string
+	RewriteURL(url string) string
 }
 
 type r2StorageService struct {
 	client    *s3.Client
 	bucket    string
 	publicURL string
+	useProxy  bool
 }
 
 func getTraceID(ctx context.Context) string {
@@ -63,10 +69,13 @@ func NewStorageService() (StorageService, error) {
 		o.UsePathStyle = true
 	})
 
+	useProxy := os.Getenv("USE_R2_PROXY") == "true"
+
 	return &r2StorageService{
 		client:    client,
 		bucket:    bucket,
 		publicURL: publicURL,
+		useProxy:  useProxy,
 	}, nil
 }
 
@@ -79,7 +88,10 @@ func (s *r2StorageService) UploadFile(ctx context.Context, file multipart.File, 
 
 	contentType := header.Header.Get("Content-Type")
 	if contentType == "" {
-		contentType = "application/octet-stream"
+		contentType = mime.TypeByExtension(ext)
+		if contentType == "" {
+			contentType = "application/octet-stream"
+		}
 	}
 
 	log.Printf("[INTEGRATION] TraceID: %s | Action: R2_UPLOAD_START | Bucket: %s | Key: %s", traceID, s.bucket, key)
@@ -99,7 +111,7 @@ func (s *r2StorageService) UploadFile(ctx context.Context, file multipart.File, 
 	}
 
 	log.Printf("[INTEGRATION] TraceID: %s | Action: R2_UPLOAD_SUCCESS | Key: %s | TimeCost: %v", traceID, key, timeCost)
-	return fmt.Sprintf("%s/%s", strings.TrimRight(s.publicURL, "/"), key), nil
+	return s.GetPublicURL(key), nil
 }
 
 func (s *r2StorageService) DeleteFile(ctx context.Context, fileURL string) error {
@@ -131,4 +143,49 @@ func (s *r2StorageService) DeleteFile(ctx context.Context, fileURL string) error
 
 	log.Printf("[INTEGRATION] TraceID: %s | Action: R2_DELETE_SUCCESS | Key: %s | TimeCost: %v", traceID, key, timeCost)
 	return nil
+}
+
+func (s *r2StorageService) GetFile(ctx context.Context, key string) (io.ReadCloser, string, error) {
+	traceID := getTraceID(ctx)
+	log.Printf("[INTEGRATION] TraceID: %s | Action: R2_GET_FILE_START | Bucket: %s | Key: %s", traceID, s.bucket, key)
+	start := time.Now()
+
+	out, err := s.client.GetObject(ctx, &s3.GetObjectInput{
+		Bucket: aws.String(s.bucket),
+		Key:    aws.String(key),
+	})
+
+	timeCost := time.Since(start)
+	if err != nil {
+		log.Printf("[INTEGRATION] TraceID: %s | Action: R2_GET_FILE_FAILED | Error: %v | TimeCost: %v", traceID, err, timeCost)
+		return nil, "", err
+	}
+
+	contentType := "application/octet-stream"
+	if out.ContentType != nil {
+		contentType = *out.ContentType
+	}
+
+	log.Printf("[INTEGRATION] TraceID: %s | Action: R2_GET_FILE_SUCCESS | Key: %s | TimeCost: %v", traceID, key, timeCost)
+	return out.Body, contentType, nil
+}
+
+func (s *r2StorageService) GetPublicURL(key string) string {
+	if s.useProxy {
+		// This should match the backend API route we will create
+		return fmt.Sprintf("/api/v1/public/assets/%s", key)
+	}
+	return fmt.Sprintf("%s/%s", strings.TrimRight(s.publicURL, "/"), key)
+}
+
+func (s *r2StorageService) RewriteURL(url string) string {
+	if !s.useProxy || url == "" {
+		return url
+	}
+	prefix := strings.TrimRight(s.publicURL, "/") + "/"
+	if strings.HasPrefix(url, prefix) {
+		key := strings.TrimPrefix(url, prefix)
+		return fmt.Sprintf("/api/v1/public/assets/%s", key)
+	}
+	return url
 }

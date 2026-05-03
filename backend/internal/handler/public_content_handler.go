@@ -1,9 +1,10 @@
 package handler
 
 import (
-	"net/http"
 	"github.com/gin-gonic/gin"
 	"github.com/yayanberutu/churchwebsite/backend/internal/service"
+	"io"
+	"net/http"
 )
 
 type PublicContentHandler struct {
@@ -123,4 +124,26 @@ func (h *PublicContentHandler) GetUpcomingActivities(c *gin.Context) {
 	})
 }
 
+func (h *PublicContentHandler) ProxyAsset(c *gin.Context) {
+	// key is the path after /assets/
+	key := c.Param("path")
+	if key == "" {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	// Trim leading slash if any
+	if key[0] == '/' {
+		key = key[1:]
+	}
 
+	body, contentType, err := h.service.ProxyAsset(c.Request.Context(), key)
+	if err != nil {
+		c.Status(http.StatusNotFound)
+		return
+	}
+	defer body.Close()
+
+	c.Header("Content-Type", contentType)
+	c.Header("Cache-Control", "public, max-age=31536000") // Cache for 1 year
+	io.Copy(c.Writer, body)
+}
