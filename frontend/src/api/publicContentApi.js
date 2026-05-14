@@ -1,6 +1,8 @@
 // src/api/publicContentApi.js
 
-const BASE_URL = "/api/v1/public";
+import { buildApiUrl } from "../config/api";
+
+const BASE_URL = buildApiUrl("/api/v1/public");
 
 export const fetchLatestWarta = async () => {
   try {

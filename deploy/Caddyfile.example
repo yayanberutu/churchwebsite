@@ -1,0 +1,8 @@
+hkbp.berutu.dev {
+    reverse_proxy hkbp-frontend:80
+}
+
+api-hkbp.berutu.dev {
+    reverse_proxy hkbp-backend:8080
+}
+

@@ -1,0 +1,61 @@
+services:
+  hkbp-frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: ${VITE_API_BASE_URL}
+    container_name: hkbp-frontend
+    restart: unless-stopped
+    depends_on:
+      - hkbp-backend
+    networks:
+      - web
+      - hkbp-internal
+
+  hkbp-backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: hkbp-backend
+    restart: unless-stopped
+    env_file:
+      - .env
+    depends_on:
+      hkbp-db:
+        condition: service_healthy
+    networks:
+      - web
+      - hkbp-internal
+
+  hkbp-db:
+    image: mysql:8.0
+    container_name: hkbp-db
+    restart: unless-stopped
+    env_file:
+      - .env
+    command:
+      - --default-authentication-plugin=mysql_native_password
+      - --character-set-server=utf8mb4
+      - --collation-server=utf8mb4_unicode_ci
+    volumes:
+      - hkbp_mysql_data:/var/lib/mysql
+      - ./backend/migrations:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h localhost -u root -p$$MYSQL_ROOT_PASSWORD"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 20s
+    networks:
+      - hkbp-internal
+
+volumes:
+  hkbp_mysql_data:
+
+networks:
+  web:
+    external: true
+  hkbp-internal:
+    driver: bridge
+

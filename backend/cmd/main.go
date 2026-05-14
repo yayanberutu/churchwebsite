@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -16,6 +17,28 @@ import (
 	"github.com/yayanberutu/churchwebsite/backend/internal/repository"
 	"github.com/yayanberutu/churchwebsite/backend/internal/service"
 )
+
+func parseAllowedOrigins() []string {
+	rawOrigins := os.Getenv("CORS_ALLOWED_ORIGINS")
+	if strings.TrimSpace(rawOrigins) == "" {
+		return []string{"http://localhost:5173", "https://hkbp.berutu.dev"}
+	}
+
+	parts := strings.Split(rawOrigins, ",")
+	origins := make([]string, 0, len(parts))
+	for _, part := range parts {
+		origin := strings.TrimSpace(part)
+		if origin != "" {
+			origins = append(origins, origin)
+		}
+	}
+
+	if len(origins) == 0 {
+		return []string{"http://localhost:5173", "https://hkbp.berutu.dev"}
+	}
+
+	return origins
+}
 
 func main() {
 	// Setup log file
@@ -84,7 +107,7 @@ func main() {
 
 	// CORS configuration
 	r.Use(cors.New(cors.Config{
-		AllowOrigins:     []string{"*"}, // Adjust for production
+		AllowOrigins:     parseAllowedOrigins(),
 		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
 		AllowHeaders:     []string{"Origin", "Content-Type", "Accept", "Authorization"},
 		ExposeHeaders:    []string{"Content-Length"},
@@ -166,6 +189,9 @@ func main() {
 
 	// Start server
 	port := os.Getenv("PORT")
+	if port == "" {
+		port = os.Getenv("APP_PORT")
+	}
 	if port == "" {
 		port = "8080"
 	}
