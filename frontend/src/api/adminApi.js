@@ -1,7 +1,8 @@
 import axios from 'axios';
+import { buildApiUrl } from '../config/api';
 
 const api = axios.create({
-  baseURL: '/api/v1/admin',
+  baseURL: buildApiUrl('/api/v1/admin'),
   headers: {
     'Content-Type': 'application/json',
   },
@@ -54,8 +55,22 @@ export const ministryActivityApi = {
   delete: (id) => api.delete(`/ministry-activities/${id}`),
 };
 
+export const upcomingActivityApi = {
+  getAll: () => api.get('/upcoming-activities'),
+  create: (data) => api.post('/upcoming-activities', data),
+  update: (id, data) => api.put(`/upcoming-activities/${id}`, data),
+  delete: (id) => api.delete(`/upcoming-activities/${id}`),
+};
+
 export const dashboardApi = {
   getStats: () => api.get('/stats'),
+};
+
+export const churchConfigApi = {
+  get: () => api.get('/church-config'),
+  update: (formData) => api.put('/church-config', formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  }),
 };
 
 export default api;
